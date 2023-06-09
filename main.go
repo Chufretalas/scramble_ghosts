@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"image/color"
-	"log"
-
+	"github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"image/color"
+	"log"
 )
 
 const (
@@ -16,6 +16,11 @@ const (
 	screenHeight = 350
 	pWidth       = 20
 	pHeight      = 20
+	bV           = 2
+)
+
+var (
+	toRemove []int
 )
 
 type Enemy struct {
@@ -38,6 +43,8 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+
+	// Player movement
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		g.player.x += g.player.v
 	}
@@ -50,13 +57,31 @@ func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		g.player.y -= g.player.v
 	}
+
+	// fire bullets
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		g.bullets = append(g.bullets, Bullet{g.player.x + pWidth/2, g.player.y})
-		fmt.Println(g.bullets)
 	}
+
+	// Remove bullets outr of frame
 	for i := range g.bullets {
-		g.bullets[i].y -= 5
+		g.bullets[i].y -= bV
+		if g.bullets[i].y+10 < 0 {
+			toRemove = append(toRemove, i)
+		}
 	}
+
+	if len(toRemove) != 0 {
+		newBullets := make([]Bullet, 0, len(g.bullets)-len(toRemove))
+		for i, bullet := range g.bullets {
+			if !utils.InSlice(toRemove, i) {
+				newBullets = append(newBullets, bullet)
+			}
+		}
+		g.bullets = newBullets
+		toRemove = make([]int, 0)
+	}
+
 	return nil
 }
 
@@ -78,6 +103,7 @@ func main() {
 		bullets: make([]Bullet, 0),
 		player:  Player{0, 0, 10},
 	}
+	toRemove = make([]int, 0)
 	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
 	ebiten.SetWindowTitle("Scramble Ghosts 👻")
 	if err := ebiten.RunGame(game); err != nil {
