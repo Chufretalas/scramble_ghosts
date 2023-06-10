@@ -16,7 +16,6 @@ const (
 	screenWidth  = 600
 	screenHeight = 350
 	bV           = 2
-	pAcc         = 0.4 // player acceleration
 )
 
 var (
@@ -27,12 +26,6 @@ type Enemy struct {
 	x, y          float32
 	width, height float32
 	hit           bool
-}
-
-type Player struct {
-	x, y          float32
-	width, height float32
-	vx, vy        float32
 }
 
 type Bullet struct {
@@ -46,56 +39,9 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
-	walkedx := false
-	walkedy := false
 
 	// Player movement
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		if g.player.vx < 10 {
-			if g.player.vx < 0 {
-				g.player.vx = 0
-			}
-			g.player.vx += pAcc
-		}
-		walkedx = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		if g.player.vx > -10 {
-			if g.player.vx > 0 {
-				g.player.vx = 0
-			}
-			g.player.vx -= pAcc
-		}
-		walkedx = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		if g.player.vy < 10 {
-			if g.player.vy < 0 {
-				g.player.vy = 0
-			}
-			g.player.vy += pAcc
-		}
-		walkedy = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		if g.player.vy > -10 {
-			if g.player.vy > 0 {
-				g.player.vy = 0
-			}
-			g.player.vy -= pAcc
-		}
-		walkedy = true
-	}
-
-	g.player.x += g.player.vx
-	g.player.y += g.player.vy
-
-	if !walkedx {
-		g.player.vx = 0
-	}
-	if !walkedy {
-		g.player.vy = 0
-	}
+	g.player.Move(10, 0.35)
 	//end player movement
 
 	// fire bullets
