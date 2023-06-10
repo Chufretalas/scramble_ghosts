@@ -16,6 +16,7 @@ const (
 	screenWidth  = 600
 	screenHeight = 350
 	bV           = 2
+	pAcc         = 0.4 // player acceleration
 )
 
 var (
@@ -31,7 +32,7 @@ type Enemy struct {
 type Player struct {
 	x, y          float32
 	width, height float32
-	v             float32
+	vx, vy        float32
 }
 
 type Bullet struct {
@@ -45,20 +46,57 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+	walkedx := false
+	walkedy := false
 
 	// Player movement
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		g.player.x += g.player.v
+		if g.player.vx < 10 {
+			if g.player.vx < 0 {
+				g.player.vx = 0
+			}
+			g.player.vx += pAcc
+		}
+		walkedx = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		g.player.x -= g.player.v
+		if g.player.vx > -10 {
+			if g.player.vx > 0 {
+				g.player.vx = 0
+			}
+			g.player.vx -= pAcc
+		}
+		walkedx = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		g.player.y += g.player.v
+		if g.player.vy < 10 {
+			if g.player.vy < 0 {
+				g.player.vy = 0
+			}
+			g.player.vy += pAcc
+		}
+		walkedy = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		g.player.y -= g.player.v
+		if g.player.vy > -10 {
+			if g.player.vy > 0 {
+				g.player.vy = 0
+			}
+			g.player.vy -= pAcc
+		}
+		walkedy = true
 	}
+
+	g.player.x += g.player.vx
+	g.player.y += g.player.vy
+
+	if !walkedx {
+		g.player.vx = 0
+	}
+	if !walkedy {
+		g.player.vy = 0
+	}
+	//end player movement
 
 	// fire bullets
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
@@ -116,7 +154,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	for _, bullet := range g.bullets {
-		vector.DrawFilledCircle(screen, bullet.x, bullet.y, 10, color.RGBA64{255, 0, 0, 255}, true)
+		vector.DrawFilledCircle(screen, bullet.x, bullet.y, 10, color.RGBA{255, 0, 0, 255}, true)
 	}
 }
 
@@ -128,9 +166,11 @@ func main() {
 	game := &Game{
 		enemies: make([]*Enemy, 0),
 		bullets: make([]*Bullet, 0),
-		player:  Player{0, 0, 30, 30, 10},
+		player:  Player{x: 0, y: 0, width: 30, height: 30},
 	}
 	game.enemies = append(game.enemies, &Enemy{x: screenWidth / 2, y: screenHeight / 2, width: 30, height: 30, hit: false})
+	game.enemies = append(game.enemies, &Enemy{x: screenWidth/2 + 50, y: screenHeight / 2, width: 30, height: 30, hit: false})
+	game.enemies = append(game.enemies, &Enemy{x: screenWidth / 2, y: screenHeight/2 + 50, width: 30, height: 30, hit: false})
 	toRemove = make([]int, 0)
 	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
 	ebiten.SetWindowTitle("Scramble Ghosts 👻")
