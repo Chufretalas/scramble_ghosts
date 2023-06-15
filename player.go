@@ -56,6 +56,22 @@ func (p *Player) Move(maxV, acc float32) {
 	p.x += p.vx
 	p.y += p.vy
 
+	//Check bounds
+	if p.x+p.width > screenWidth {
+		p.x = screenWidth - p.width
+	}
+	if p.x < 0 {
+		p.x = 0
+	}
+
+	if p.y+p.height > screenHeight {
+		p.y = screenHeight - p.height
+	}
+	if p.y < 0 {
+		p.y = 0
+	}
+	// End check bounds
+
 	if !walkedx {
 		p.vx = 0
 	}
