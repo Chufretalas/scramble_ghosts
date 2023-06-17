@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"image/color"
 	"log"
+	"time"
 
 	"github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"github.com/solarlune/ebitick"
 )
 
 const (
@@ -35,12 +37,14 @@ type Bullet struct {
 }
 
 type Game struct {
-	enemies []*Enemy
-	bullets []*Bullet
-	player  Player
+	enemies     []*Enemy
+	bullets     []*Bullet
+	player      Player
+	TimerSystem *ebitick.TimerSystem
 }
 
 func (g *Game) Update() error {
+	g.TimerSystem.Update()
 
 	// Player movement
 	g.player.Move(10, 0.35)
@@ -124,12 +128,23 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return screenWidth, screenHeight
 }
 
+func RepeatTimer(g *Game) {
+	g.TimerSystem.After(time.Second, func() {
+		RepeatTimer(g)
+	})
+	fmt.Println("opa")
+}
+
 func main() {
 	game := &Game{
-		enemies: make([]*Enemy, 0),
-		bullets: make([]*Bullet, 0),
-		player:  Player{x: 0, y: 0, width: 30, height: 30},
+		enemies:     make([]*Enemy, 0),
+		bullets:     make([]*Bullet, 0),
+		player:      Player{x: 0, y: 0, width: 30, height: 30},
+		TimerSystem: ebitick.NewTimerSystem(),
 	}
+	game.TimerSystem.After(time.Second, func() {
+		RepeatTimer(game)
+	})
 	game.enemies = append(game.enemies, &Enemy{x: screenWidth / 2, y: screenHeight / 2, width: 30, height: 30, hit: false, alive: true})
 	game.enemies = append(game.enemies, &Enemy{x: screenWidth/2 + 50, y: screenHeight / 2, width: 30, height: 30, hit: false, alive: true})
 	game.enemies = append(game.enemies, &Enemy{x: screenWidth / 2, y: screenHeight/2 + 50, width: 30, height: 30, hit: false, alive: true})
