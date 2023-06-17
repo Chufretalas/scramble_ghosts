@@ -82,7 +82,9 @@ func (g *Game) Update() error {
 		}
 	}
 
+	// Remove bullets
 	if len(bulletsToRemove) != 0 {
+		bulletsToRemove = utils.RemoveDups(bulletsToRemove)
 		newBullets := make([]*Bullet, 0, len(g.bullets)-len(bulletsToRemove))
 		for i, bullet := range g.bullets {
 			if !utils.InSlice(bulletsToRemove, i) {
