@@ -8,74 +8,74 @@ var (
 )
 
 type Player struct {
-	x, y          float32
-	width, height float32
-	vx, vy        float32
+	X, Y          float32
+	Width, Height float32
+	VX, VY        float32
 }
 
 func (p *Player) Move(maxV, acc float32) {
 	walkedx = false
 	walkedy = false
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		if p.vx < maxV {
-			if p.vx < 0 {
-				p.vx = 0
+		if p.VX < maxV {
+			if p.VX < 0 {
+				p.VX = 0
 			}
-			p.vx += acc
+			p.VX += acc
 		}
 		walkedx = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		if p.vx > -maxV {
-			if p.vx > 0 {
-				p.vx = 0
+		if p.VX > -maxV {
+			if p.VX > 0 {
+				p.VX = 0
 			}
-			p.vx -= acc
+			p.VX -= acc
 		}
 		walkedx = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		if p.vy < maxV {
-			if p.vy < 0 {
-				p.vy = 0
+		if p.VY < maxV {
+			if p.VY < 0 {
+				p.VY = 0
 			}
-			p.vy += acc
+			p.VY += acc
 		}
 		walkedy = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		if p.vy > -maxV {
-			if p.vy > 0 {
-				p.vy = 0
+		if p.VY > -maxV {
+			if p.VY > 0 {
+				p.VY = 0
 			}
-			p.vy -= acc
+			p.VY -= acc
 		}
 		walkedy = true
 	}
 
-	p.x += p.vx
-	p.y += p.vy
+	p.X += p.VX
+	p.Y += p.VY
 
 	//Check bounds
-	if p.x+p.width > screenWidth {
-		p.x = screenWidth - p.width
+	if p.X+p.Width > ScreenWidth {
+		p.X = ScreenWidth - p.Width
 	}
-	if p.x < 0 {
-		p.x = 0
+	if p.X < 0 {
+		p.X = 0
 	}
 
-	if p.y+p.height > screenHeight {
-		p.y = screenHeight - p.height
+	if p.Y+p.Height > ScreenHeight {
+		p.Y = ScreenHeight - p.Height
 	}
-	if p.y < 0 {
-		p.y = 0
+	if p.Y < 0 {
+		p.Y = 0
 	}
 	// End check bounds
 
 	if !walkedx {
-		p.vx = 0
+		p.VX = 0
 	}
 	if !walkedy {
-		p.vy = 0
+		p.VY = 0
 	}
 }
