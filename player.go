@@ -18,43 +18,66 @@ func (p *Player) Move(maxV, acc float32) {
 	walkedy = false
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		if p.VX < maxV {
-			if p.VX < 0 {
+			if p.VX < 0 && p.VX < -acc*StoppingMult {
+				p.VX += acc * StoppingMult
+			} else if p.VX < 0 {
 				p.VX = 0
+			} else {
+				p.VX += acc
 			}
-			p.VX += acc
 		}
-		walkedx = true
+		walkedx = !walkedx
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		if p.VX > -maxV {
-			if p.VX > 0 {
+			if p.VX > 0 && p.VX > acc*StoppingMult {
+				p.VX -= acc * StoppingMult
+			} else if p.VX > 0 {
 				p.VX = 0
+			} else {
+				p.VX -= acc
 			}
-			p.VX -= acc
 		}
-		walkedx = true
+		walkedx = !walkedx
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
 		if p.VY < maxV {
-			if p.VY < 0 {
+			if p.VY < 0 && p.VY < -acc*StoppingMult {
+				p.VY += acc * StoppingMult
+			} else if p.VY < 0 {
 				p.VY = 0
+			} else {
+				p.VY += acc
 			}
-			p.VY += acc
 		}
-		walkedy = true
+		walkedy = !walkedy
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		if p.VY > -maxV {
-			if p.VY > 0 {
+			if p.VY > 0 && p.VY > acc*StoppingMult {
+				p.VY += acc * StoppingMult
+			} else if p.VY > 0 {
 				p.VY = 0
+			} else {
+				p.VY -= acc
 			}
-			p.VY -= acc
 		}
-		walkedy = true
+		walkedy = !walkedy
 	}
 
-	p.X += p.VX
-	p.Y += p.VY
+	// Actually walk
+	if walkedx {
+		p.X += p.VX
+	} else {
+		p.VX = 0
+	}
+
+	if walkedy {
+		p.Y += p.VY
+	} else {
+		p.VY = 0
+	}
+	// End actually walk
 
 	//Check bounds
 	if p.X+p.Width > ScreenWidth {
@@ -71,11 +94,4 @@ func (p *Player) Move(maxV, acc float32) {
 		p.Y = 0
 	}
 	// End check bounds
-
-	if !walkedx {
-		p.VX = 0
-	}
-	if !walkedy {
-		p.VY = 0
-	}
 }

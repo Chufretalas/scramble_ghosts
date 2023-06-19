@@ -18,10 +18,11 @@ import (
 const (
 	ScreenWidth    = 600
 	ScreenHeight   = 350
-	bV             = 2
+	bV             = 4
 	EnemyW         = 30
 	EnemyH         = 30
 	EnemySpawnTime = time.Millisecond * 150
+	StoppingMult   = 4
 )
 
 var (
@@ -43,7 +44,7 @@ type Game struct {
 func (g *Game) Update() error {
 	g.TimerSystem.Update()
 
-	g.Player.Move(8, 0.5)
+	g.Player.Move(8, 0.75)
 
 	// fire bullets
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
