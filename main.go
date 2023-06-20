@@ -10,7 +10,6 @@ import (
 	"github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/solarlune/ebitick"
 )
@@ -21,12 +20,14 @@ const (
 	bV             = 4
 	EnemyW         = 30
 	EnemyH         = 30
-	EnemySpawnTime = time.Millisecond * 150
+	EnemySpawnTime = time.Millisecond * 100
 	StoppingMult   = 4
 )
 
 var (
 	bulletsToRemove []int
+	ShotDelay       time.Duration
+	CanShoot        bool
 )
 
 type Bullet struct {
@@ -47,8 +48,10 @@ func (g *Game) Update() error {
 	g.Player.Move(8, 0.75)
 
 	// fire bullets
-	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+	if ebiten.IsKeyPressed(ebiten.KeySpace) && CanShoot {
 		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + g.Player.Width/2, g.Player.Y, 10, 10})
+		CanShoot = false
+		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
 	}
 
 	// move bullets
@@ -158,6 +161,8 @@ func main() {
 	game.TimerSystem.After(EnemySpawnTime, func() {
 		SpawnEnemies(game)
 	})
+	ShotDelay = time.Millisecond * 200
+	CanShoot = true
 	bulletsToRemove = make([]int, 0)
 	ebiten.SetWindowSize(ScreenWidth*2, ScreenHeight*2)
 	ebiten.SetWindowTitle("Scramble Ghosts 👻")
