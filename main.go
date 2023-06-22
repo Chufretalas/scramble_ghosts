@@ -10,24 +10,30 @@ import (
 	"github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/solarlune/ebitick"
+	"golang.org/x/image/font"
 )
 
 const (
-	ScreenWidth    = 600
-	ScreenHeight   = 350
+	ScreenWidth    = 750
+	ScreenHeight   = 380
 	bV             = 4
 	EnemyW         = 30
 	EnemyH         = 30
 	EnemySpawnTime = time.Millisecond * 100
 	StoppingMult   = 4
+	ScorePerKill   = 45
 )
 
 var (
 	bulletsToRemove []int
 	ShotDelay       time.Duration
 	CanShoot        bool
+	MyEpicGamerFont font.Face
+	showDebug       bool
 )
 
 type Bullet struct {
@@ -40,15 +46,20 @@ type Game struct {
 	Bullets     []*Bullet
 	Player      Player
 	TimerSystem *ebitick.TimerSystem
+	Score       int
 }
 
 func (g *Game) Update() error {
 	g.TimerSystem.Update()
 
+	if inpututil.IsKeyJustPressed(ebiten.KeyP) {
+		showDebug = !showDebug
+	}
+
 	g.Player.Move(8, 0.75)
 
 	// fire bullets
-	if ebiten.IsKeyPressed(ebiten.KeySpace) && CanShoot {
+	if CanShoot {
 		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + g.Player.Width/2, g.Player.Y, 10, 10})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
@@ -75,6 +86,7 @@ func (g *Game) Update() error {
 					// enemy.hit = true
 					enemy.Alive = false
 					bulletsToRemove = append(bulletsToRemove, bullet_index)
+					g.Score += ScorePerKill
 					break
 				}
 			}
@@ -113,7 +125,9 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies)))
+	if showDebug {
+		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies)))
+	}
 	vector.DrawFilledRect(screen, g.Player.X, g.Player.Y, g.Player.Width, g.Player.Height, color.White, true)
 	var enemyColor color.Color
 	for _, enemy := range g.Enemies {
@@ -138,6 +152,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	for _, bullet := range g.Bullets {
 		vector.DrawFilledCircle(screen, bullet.X, bullet.Y, bullet.Width, color.RGBA{255, 0, 0, 255}, true)
 	}
+
+	text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 8, 20, color.White)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -152,11 +168,17 @@ func SpawnEnemies(g *Game) {
 }
 
 func main() {
+
+	showDebug = false
+
+	LoadFont()
+
 	game := &Game{
 		Enemies:     make([]*Enemy, 0),
 		Bullets:     make([]*Bullet, 0),
 		Player:      Player{X: 0, Y: 0, Width: 30, Height: 30},
 		TimerSystem: ebitick.NewTimerSystem(),
+		Score:       0,
 	}
 	game.TimerSystem.After(EnemySpawnTime, func() {
 		SpawnEnemies(game)
