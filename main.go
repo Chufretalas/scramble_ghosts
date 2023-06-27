@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image/color"
 	"log"
-	"math/rand"
 	"time"
 
 	"github.com/Chufretalas/scramble_ghosts/utils"
@@ -25,7 +24,6 @@ const (
 	EnemyH         = 30
 	EnemySpawnTime = time.Millisecond * 100
 	StoppingMult   = 4
-	ScorePerKill   = 45
 )
 
 var (
@@ -54,6 +52,7 @@ func (g *Game) Update() error {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		showDebug = !showDebug
+		NewRandomEnemy(ScreenWidth, ScreenHeight, 10)
 	}
 
 	g.Player.Move(8, 0.75)
@@ -86,7 +85,7 @@ func (g *Game) Update() error {
 					// enemy.hit = true
 					enemy.Alive = false
 					bulletsToRemove = append(bulletsToRemove, bullet_index)
-					g.Score += ScorePerKill
+					g.Score += enemy.Score
 					break
 				}
 			}
@@ -135,7 +134,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			if enemy.Hit {
 				enemyColor = color.RGBA{100, 200, 100, 255}
 			} else {
-				enemyColor = color.RGBA{255, 0, 0, 255}
+				switch enemy.Type {
+				case Linear:
+					enemyColor = color.RGBA{200, 0, 0, 255}
+				case CurveL:
+					enemyColor = color.RGBA{255, 100, 100, 255}
+				case CurveR:
+					enemyColor = color.RGBA{50, 50, 200, 255}
+				}
 			}
 		} else {
 			enemyColor = color.RGBA{200, 0, 0, 255}
@@ -164,7 +170,7 @@ func SpawnEnemies(g *Game) {
 	g.TimerSystem.After(EnemySpawnTime, func() {
 		SpawnEnemies(g)
 	})
-	g.Enemies = append(g.Enemies, NewEnemy(float32(rand.Int31n(ScreenWidth)), -EnemyH, rand.Float32()*1-0.5, 3))
+	g.Enemies = append(g.Enemies, NewRandomEnemy(ScreenWidth, ScreenHeight, 3))
 }
 
 func main() {
