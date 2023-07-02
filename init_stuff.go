@@ -18,7 +18,7 @@ func LoadFont() {
 		log.Fatal(err)
 	}
 	MyEpicGamerFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    16,
+		Size:    32,
 		DPI:     72,
 		Hinting: font.HintingFull,
 	})
