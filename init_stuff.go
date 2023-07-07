@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 )
@@ -25,4 +26,23 @@ func LoadFont() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func LoadImages() {
+	var tIError error
+
+	titleImage, _, tIError = ebitenutil.NewImageFromFile("./assets/title_screen_4k_16-9.png")
+
+	if tIError != nil {
+		log.Fatal("Title image did not load " + tIError.Error())
+	}
+
+	var goIError error
+
+	gameoverImage, _, goIError = ebitenutil.NewImageFromFile("./assets/gamover_screen_1080p.png")
+
+	if goIError != nil {
+		log.Fatal("Gameover image did not load " + goIError.Error())
+	}
+
 }

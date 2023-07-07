@@ -33,6 +33,7 @@ var (
 	MyEpicGamerFont font.Face
 	showDebug       bool
 	titleImage      *ebiten.Image
+	gameoverImage   *ebiten.Image
 	InvincibleMode  bool
 )
 
@@ -56,17 +57,17 @@ func (g *Game) Update() error {
 		return errors.New("ahahaha")
 	}
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyI) {
-		InvincibleMode = !InvincibleMode
-	}
-
-	if g.Mode == "title" {
+	switch g.Mode {
+	case "title":
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 			g.Mode = "game"
 		}
-	} else {
+	case "game":
 		g.GameModeUpdate()
+	case "gameover":
+		g.GameoverModeUpdate()
 	}
+
 	return nil
 }
 
@@ -75,7 +76,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		titleOp := &ebiten.DrawImageOptions{}
 		titleOp.GeoM.Scale(0.5, 0.5)
 		screen.DrawImage(titleImage, titleOp)
-
+	} else if g.Mode == "gameover" {
+		screen.DrawImage(gameoverImage, &ebiten.DrawImageOptions{})
+		textSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("Score: %v", g.Score))
+		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, ScreenWidth/2-textSize.Size().X/2, ScreenHeight/2-30, color.White)
 	} else {
 		if showDebug {
 			ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies)))
@@ -119,7 +123,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		for _, bullet := range g.Bullets {
 			vector.DrawFilledCircle(screen, bullet.X, bullet.Y, bullet.Width, color.RGBA{255, 0, 0, 255}, true)
 		}
-
 		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 20, 40, color.White)
 	}
 }
@@ -142,13 +145,7 @@ func main() {
 
 	LoadFont()
 
-	var tIError error
-
-	titleImage, _, tIError = ebitenutil.NewImageFromFile("./assets/title_screen_4k_16-9.png")
-
-	if tIError != nil {
-		log.Fatal("Title image did not load" + tIError.Error())
-	}
+	LoadImages()
 
 	game := &Game{
 		Enemies:     make([]*Enemy, 0),

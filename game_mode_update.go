@@ -11,6 +11,10 @@ func (g *Game) GameModeUpdate() int {
 
 	g.TimerSystem.Update()
 
+	if inpututil.IsKeyJustPressed(ebiten.KeyI) {
+		InvincibleMode = !InvincibleMode
+	}
+
 	if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		showDebug = !showDebug
 		NewRandomEnemy(ScreenWidth, ScreenHeight, 10)
@@ -53,8 +57,7 @@ func (g *Game) GameModeUpdate() int {
 			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X, g.Player.Y, g.Player.Width, g.Player.Height) && enemy.Alive {
 				enemy.Hit = true
 				if !InvincibleMode {
-					g.Mode = "title" //TODO: change here to add the game over screen
-					g.ResetGame()
+					g.Mode = "gameover"
 					return 0
 				}
 			} else {
