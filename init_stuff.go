@@ -45,4 +45,12 @@ func LoadImages() {
 		log.Fatal("Gameover image did not load " + goIError.Error())
 	}
 
+	var buIError error
+
+	bulletImage, _, buIError = ebitenutil.NewImageFromFile("./assets/bullet_30x30.png")
+
+	if buIError != nil {
+		log.Fatal("Gameover image did not load " + buIError.Error())
+	}
+
 }

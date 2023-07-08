@@ -24,7 +24,7 @@ func (g *Game) GameModeUpdate() int {
 
 	// fire bullets
 	if CanShoot {
-		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + g.Player.Width/2, g.Player.Y, 15, 15})
+		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + g.Player.Width/2 - BulletBaseSize/2, g.Player.Y, 2})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
 	}
@@ -45,8 +45,8 @@ func (g *Game) GameModeUpdate() int {
 				enemy.Alive = false
 				continue
 			}
-			for bullet_index, bullet := range g.Bullets { //TODO: remove the -5 magic number once the bullets stop beign a weird circle
-				if utils.IsColliding(bullet.X-5, bullet.Y, bullet.Width, bullet.Height, enemy.X, enemy.Y, enemy.Width, enemy.Height) {
+			for bullet_index, bullet := range g.Bullets {
+				if utils.IsColliding(bullet.X, bullet.Y, BulletBaseSize*bullet.sizeMult, BulletBaseSize*bullet.sizeMult, enemy.X, enemy.Y, enemy.Width, enemy.Height) {
 					// enemy.hit = true
 					enemy.Alive = false
 					bulletsToRemove = append(bulletsToRemove, bullet_index)

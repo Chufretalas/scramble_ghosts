@@ -22,6 +22,7 @@ const (
 	ScreenWidth    = 1920
 	ScreenHeight   = 1080
 	bV             = 6
+	BulletBaseSize = 30
 	EnemyW         = 50
 	EnemyH         = 50
 	EnemySpawnTime = time.Millisecond * 50
@@ -36,12 +37,13 @@ var (
 	showDebug       bool
 	titleImage      *ebiten.Image
 	gameoverImage   *ebiten.Image
+	bulletImage     *ebiten.Image
 	InvincibleMode  bool
 )
 
 type Bullet struct {
-	X, Y          float32
-	Width, Height float32
+	X, Y     float32
+	sizeMult float32
 }
 
 type Game struct {
@@ -87,6 +89,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies)))
 		}
 
+		for _, bullet := range g.Bullets {
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
+			screen.DrawImage(bulletImage, op)
+		}
+
 		var playerColor color.Color
 		if InvincibleMode {
 			playerColor = color.RGBA{200, 100, 200, 255}
@@ -122,9 +130,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				true)
 		}
 
-		for _, bullet := range g.Bullets {
-			vector.DrawFilledCircle(screen, bullet.X, bullet.Y, bullet.Width, color.RGBA{255, 0, 0, 255}, true)
-		}
 		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 20, 40, color.White)
 	}
 }
