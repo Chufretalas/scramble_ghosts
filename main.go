@@ -14,6 +14,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/solarlune/ebitick"
 	"golang.org/x/image/font"
+
+	_ "github.com/silbinarywolf/preferdiscretegpu"
 )
 
 const (
