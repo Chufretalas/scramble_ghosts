@@ -23,6 +23,7 @@ const (
 	ScreenHeight   = 1080
 	bV             = 6
 	BulletBaseSize = 30
+	PlayerBaseSize = 40
 	EnemyW         = 50
 	EnemyH         = 50
 	EnemySpawnTime = time.Millisecond * 50
@@ -38,12 +39,13 @@ var (
 	titleImage      *ebiten.Image
 	gameoverImage   *ebiten.Image
 	bulletImage     *ebiten.Image
+	playerImage     *ebiten.Image
 	InvincibleMode  bool
 )
 
 type Bullet struct {
 	X, Y     float32
-	sizeMult float32
+	SizeMult float32
 }
 
 type Game struct {
@@ -95,13 +97,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			screen.DrawImage(bulletImage, op)
 		}
 
-		var playerColor color.Color
-		if InvincibleMode {
-			playerColor = color.RGBA{200, 100, 200, 255}
-		} else {
-			playerColor = color.White
-		}
-		vector.DrawFilledRect(screen, g.Player.X, g.Player.Y, g.Player.Width, g.Player.Height, playerColor, true)
+		// draw player
+		playerOp := &ebiten.DrawImageOptions{}
+		playerOp.GeoM.Translate(float64(g.Player.X), float64(g.Player.Y))
+
+		screen.DrawImage(playerImage, playerOp)
 
 		var enemyColor color.Color
 		for _, enemy := range g.Enemies {
@@ -157,7 +157,7 @@ func main() {
 	game := &Game{
 		Enemies:     make([]*Enemy, 0),
 		Bullets:     make([]*Bullet, 0),
-		Player:      Player{X: ScreenWidth/2 - 20, Y: ScreenHeight - 40, Width: 40, Height: 40},
+		Player:      Player{X: ScreenWidth/2 - 20, Y: ScreenHeight - 40, SizeMult: 1},
 		TimerSystem: ebitick.NewTimerSystem(),
 		Score:       0,
 		Mode:        "title",

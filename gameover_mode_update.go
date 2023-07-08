@@ -11,4 +11,10 @@ func (g *Game) GameoverModeUpdate() {
 		g.ResetGame()
 		return
 	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+		g.Mode = "title"
+		g.ResetGame()
+		return
+	}
 }

@@ -20,11 +20,11 @@ func (g *Game) GameModeUpdate() int {
 		NewRandomEnemy(ScreenWidth, ScreenHeight, 10)
 	}
 
-	g.Player.Move(8, 0.75)
+	g.Player.Move(9, 0.8)
 
 	// fire bullets
 	if CanShoot {
-		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + g.Player.Width/2 - BulletBaseSize/2, g.Player.Y, 2})
+		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + PlayerBaseSize*g.Player.SizeMult/2 - BulletBaseSize/2, g.Player.Y, 1})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
 	}
@@ -46,7 +46,7 @@ func (g *Game) GameModeUpdate() int {
 				continue
 			}
 			for bullet_index, bullet := range g.Bullets {
-				if utils.IsColliding(bullet.X, bullet.Y, BulletBaseSize*bullet.sizeMult, BulletBaseSize*bullet.sizeMult, enemy.X, enemy.Y, enemy.Width, enemy.Height) {
+				if utils.IsColliding(bullet.X, bullet.Y, BulletBaseSize*bullet.SizeMult, BulletBaseSize*bullet.SizeMult, enemy.X, enemy.Y, enemy.Width, enemy.Height) {
 					// enemy.hit = true
 					enemy.Alive = false
 					bulletsToRemove = append(bulletsToRemove, bullet_index)
@@ -54,7 +54,7 @@ func (g *Game) GameModeUpdate() int {
 					break
 				}
 			}
-			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X, g.Player.Y, g.Player.Width, g.Player.Height) && enemy.Alive {
+			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X, g.Player.Y, PlayerBaseSize*g.Player.SizeMult, PlayerBaseSize*g.Player.SizeMult) && enemy.Alive {
 				enemy.Hit = true
 				if !InvincibleMode {
 					g.Mode = "gameover"

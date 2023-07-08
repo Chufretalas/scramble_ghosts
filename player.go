@@ -10,9 +10,9 @@ var (
 )
 
 type Player struct {
-	X, Y          float32
-	Width, Height float32
-	VX, VY        float32
+	X, Y     float32
+	SizeMult float32
+	VX, VY   float32
 }
 
 func (p *Player) Move(maxV, acc float32) {
@@ -82,15 +82,15 @@ func (p *Player) Move(maxV, acc float32) {
 	// End actually walk
 
 	//Check bounds
-	if p.X+p.Width > ScreenWidth {
-		p.X = ScreenWidth - p.Width
+	if p.X+PlayerBaseSize*p.SizeMult > ScreenWidth {
+		p.X = ScreenWidth - PlayerBaseSize*p.SizeMult
 	}
 	if p.X < 0 {
 		p.X = 0
 	}
 
-	if p.Y+p.Height > ScreenHeight {
-		p.Y = ScreenHeight - p.Height
+	if p.Y+PlayerBaseSize*p.SizeMult > ScreenHeight {
+		p.Y = ScreenHeight - PlayerBaseSize*p.SizeMult
 	}
 	if p.Y < 0 {
 		p.Y = 0
