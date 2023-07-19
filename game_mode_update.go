@@ -23,7 +23,7 @@ func (g *Game) GameModeUpdate() int {
 	g.Player.Move(9, 0.8)
 
 	// fire bullets
-	if CanShoot {
+	if CanShoot && !InvincibleMode {
 		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + PlayerBaseSize*g.Player.SizeMult/2 - BulletBaseSize/2, g.Player.Y, 1})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })

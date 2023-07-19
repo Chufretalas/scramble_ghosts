@@ -11,7 +11,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/solarlune/ebitick"
 	"golang.org/x/image/font"
 
@@ -40,6 +39,9 @@ var (
 	gameoverImage   *ebiten.Image
 	bulletImage     *ebiten.Image
 	playerImage     *ebiten.Image
+	CurveLImage     *ebiten.Image
+	CurveRImage     *ebiten.Image
+	LinearImage     *ebiten.Image
 	InvincibleMode  bool
 )
 
@@ -103,31 +105,24 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 		screen.DrawImage(playerImage, playerOp)
 
-		var enemyColor color.Color
+		// draw enemies
+		enemyOp := &ebiten.DrawImageOptions{}
 		for _, enemy := range g.Enemies {
-			if enemy.Alive {
-				if enemy.Hit {
-					enemyColor = color.RGBA{100, 200, 100, 255}
-				} else {
-					switch enemy.Type {
-					case Linear:
-						enemyColor = color.RGBA{200, 0, 0, 255}
-					case CurveL:
-						enemyColor = color.RGBA{255, 100, 100, 255}
-					case CurveR:
-						enemyColor = color.RGBA{50, 50, 200, 255}
-					}
-				}
-			} else {
-				enemyColor = color.RGBA{200, 0, 0, 255}
+			if enemy.Hit {
+				enemyOp.ColorScale.SetB(255)
+				enemyOp.ColorScale.SetG(100)
 			}
-			vector.DrawFilledRect(screen,
-				enemy.X,
-				enemy.Y,
-				enemy.Width,
-				enemy.Height,
-				enemyColor,
-				true)
+			enemyOp.GeoM.Translate(float64(enemy.X), float64(enemy.Y))
+			switch enemy.Type {
+			case Linear:
+				screen.DrawImage(LinearImage, enemyOp)
+			case CurveL:
+				screen.DrawImage(CurveLImage, enemyOp)
+			case CurveR:
+				screen.DrawImage(CurveRImage, enemyOp)
+			}
+			enemyOp.ColorScale.Reset()
+			enemyOp.GeoM.Reset()
 		}
 
 		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 20, 40, color.White)
