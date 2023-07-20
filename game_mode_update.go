@@ -58,6 +58,7 @@ func (g *Game) GameModeUpdate() int {
 				enemy.Hit = true
 				if !InvincibleMode {
 					g.Mode = "gameover"
+					SendScore(g.Score)
 					return 0
 				}
 			} else {

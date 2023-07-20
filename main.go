@@ -11,6 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/joho/godotenv"
 	"github.com/solarlune/ebitick"
 	"golang.org/x/image/font"
 
@@ -156,6 +157,8 @@ func main() {
 
 	showDebug = false
 	InvincibleMode = false
+
+	godotenv.Load()
 
 	LoadUserInfo()
 

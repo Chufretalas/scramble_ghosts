@@ -17,9 +17,11 @@ func LoadUserInfo() {
 		err = nil
 		file, createError := os.Create("./user_info.txt")
 		if createError != nil {
+			file.Close()
 			log.Fatal("error trying to create a user_info.txt, file try creating it manually in the same folder as the game")
 		}
 		file.WriteString("open_user_info.txt_and_write_a_name")
+		file.Close()
 	}
 
 	err = nil

@@ -1,2 +1,3 @@
 *.exe
 user_info.txt
+*.env
