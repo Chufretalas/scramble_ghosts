@@ -5,18 +5,19 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 )
 
 // TODO: make this a goroutine
 func SendScore(score int) {
-	apiPass, exists := os.LookupEnv("API_PASSWORD")
-	if !exists {
+	if ApiPass == "" {
 		return
 	}
 
-	jsonBody := []byte(fmt.Sprintf(`{"name": "%v", "score": %v, "version": "%v"}`, UserName, score, VERSION))
+	jsonBody := []byte(fmt.Sprintf(`{"name": %q, "score": %v, "version": %q}`, UserName, score, VERSION))
 	bodyReader := bytes.NewReader(jsonBody)
+
+	fmt.Println(string(jsonBody))
+	fmt.Println(UserName)
 
 	req, err := http.NewRequest(http.MethodPost, "https://aluraflix-chufretalas.vercel.app/api/sg", bodyReader)
 
@@ -25,7 +26,7 @@ func SendScore(score int) {
 		return
 	}
 
-	req.Header.Add("authorization", fmt.Sprintf("hackersfedem %v", apiPass))
+	req.Header.Add("authorization", fmt.Sprintf("hackersfedem %v", ApiPass))
 	req.Header.Add("Content-Type", "application/json")
 
 	client := &http.Client{}

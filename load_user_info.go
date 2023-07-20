@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// TODO: remove the pass stuff from here?
 func LoadUserInfo() {
 
 	var contents []byte
@@ -37,10 +38,17 @@ func LoadUserInfo() {
 	split := strings.Split(lines[0], " ")
 
 	for _, e := range split {
-		e = strings.Trim(e, " ")
+		e, _ = strings.CutSuffix(strings.Trim(e, " "), "\r")
 		if e != "" {
 			UserName = e
 			break
 		}
+	}
+
+	if len(lines) > 1 {
+		ApiPass = lines[1]
+		// fmt.Println(ApiPass)
+	} else {
+		ApiPass = ""
 	}
 }

@@ -11,7 +11,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
-	"github.com/joho/godotenv"
 	"github.com/solarlune/ebitick"
 	"golang.org/x/image/font"
 
@@ -46,6 +45,7 @@ var (
 	LinearImage     *ebiten.Image
 	InvincibleMode  bool
 	UserName        string
+	ApiPass         string
 )
 
 type Bullet struct {
@@ -157,8 +157,6 @@ func main() {
 
 	showDebug = false
 	InvincibleMode = false
-
-	godotenv.Load()
 
 	LoadUserInfo()
 
