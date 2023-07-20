@@ -27,6 +27,7 @@ const (
 	EnemyH         = 50
 	EnemySpawnTime = time.Millisecond * 50
 	StoppingMult   = 4
+	VERSION        = "0.1.0"
 )
 
 var (
@@ -43,6 +44,7 @@ var (
 	CurveRImage     *ebiten.Image
 	LinearImage     *ebiten.Image
 	InvincibleMode  bool
+	UserName        string
 )
 
 type Bullet struct {
@@ -84,6 +86,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		titleOp := &ebiten.DrawImageOptions{}
 		titleOp.GeoM.Scale(0.5, 0.5)
 		screen.DrawImage(titleImage, titleOp)
+
+		versionOp := &ebiten.DrawImageOptions{}
+		versionOp.GeoM.Scale(0.5, 0.5)
+		versionOp.GeoM.Translate(10, ScreenHeight-20)
+		text.DrawWithOptions(screen, fmt.Sprintf("Version: %v", VERSION), MyEpicGamerFont, versionOp)
+
+		userNameOp := &ebiten.DrawImageOptions{}
+		userNameOp.GeoM.Scale(0.5, 0.5)
+		userNameOp.GeoM.Translate(10, ScreenHeight-45)
+		text.DrawWithOptions(screen, fmt.Sprintf("User Name: %v", UserName), MyEpicGamerFont, userNameOp)
 	} else if g.Mode == "gameover" {
 		screen.DrawImage(gameoverImage, &ebiten.DrawImageOptions{})
 		textSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("Score: %v", g.Score))
@@ -144,6 +156,8 @@ func main() {
 
 	showDebug = false
 	InvincibleMode = false
+
+	LoadUserInfo()
 
 	LoadFont()
 
