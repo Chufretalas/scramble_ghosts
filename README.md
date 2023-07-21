@@ -3,3 +3,5 @@
 ### Beta Testers
 
 - O-Palladino
+- maitroll
+- RickAfon

@@ -54,11 +54,11 @@ func (g *Game) GameModeUpdate() int {
 					break
 				}
 			}
-			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X, g.Player.Y, PlayerBaseSize*g.Player.SizeMult, PlayerBaseSize*g.Player.SizeMult) && enemy.Alive {
+			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X+6, g.Player.Y+6, PlayerBaseSize*g.Player.SizeMult-12, PlayerBaseSize*g.Player.SizeMult-12) && enemy.Alive {
 				enemy.Hit = true
 				if !InvincibleMode {
 					g.Mode = "gameover"
-					SendScore(g.Score)
+					go SendScore(g.Score)
 					return 0
 				}
 			} else {
