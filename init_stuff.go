@@ -104,4 +104,20 @@ func LoadImages() {
 	}
 
 	imageError = nil
+
+	DWWLImage, _, imageError = ebitenutil.NewImageFromFile("./assets/dw_warning_l.png")
+
+	if imageError != nil {
+		u.ErrorAndDie("DWWL sprite image did not load: " + imageError.Error())
+	}
+
+	imageError = nil
+
+	DWWRImage, _, imageError = ebitenutil.NewImageFromFile("./assets/dw_warning_r.png")
+
+	if imageError != nil {
+		u.ErrorAndDie("DWWR sprite image did not load: " + imageError.Error())
+	}
+
+	imageError = nil
 }

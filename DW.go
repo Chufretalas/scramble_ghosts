@@ -9,11 +9,12 @@ import (
 const dwV = math.Pi / 600
 
 type DW struct {
-	Image  *ebiten.Image
-	Active bool
-	X      float64
-	Rad    float64
-	Side   string
+	Image      *ebiten.Image
+	Active     bool
+	IsSpawning bool
+	X          float64
+	Rad        float64
+	Side       string
 }
 
 func (dw *DW) Move() {
@@ -39,6 +40,7 @@ func (dw *DW) Move() {
 
 func (dw *DW) Reset() {
 	dw.Active = false
+	dw.IsSpawning = false
 	dw.Rad = 0
 	switch dw.Side {
 	case "left":

@@ -40,15 +40,15 @@ func (g *Game) GameModeUpdate() int {
 	}
 
 	// spawn DWs, move them and check for collision with the player
-	if !g.DWL.Active {
+	if !g.DWL.Active && !g.DWL.IsSpawning {
 		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 < ScreenWidth*0.35 {
-			if n := rand.Int31n(500); n == 10 {
-				g.DWL.Active = true
+			if n := rand.Int31n(450); n == 10 {
+				g.SpawnDeathWall("left")
 			}
 		}
-	} else {
+	} else if g.DWL.Active {
 		g.DWL.Move()
-		if g.Player.X+12 < float32(g.DWL.X)+DWWidth {
+		if g.Player.X < float32(g.DWL.X)+DWWidth-DWSafeZone {
 			if !InvincibleMode {
 				g.Mode = "gameover"
 				go SendScore(g.Score)
@@ -57,15 +57,15 @@ func (g *Game) GameModeUpdate() int {
 		}
 	}
 
-	if !g.DWR.Active {
+	if !g.DWR.Active && !g.DWR.IsSpawning {
 		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 > ScreenWidth*0.65 {
-			if n := rand.Int31n(500); n == 10 {
-				g.DWR.Active = true
+			if n := rand.Int31n(450); n == 10 {
+				g.SpawnDeathWall("right")
 			}
 		}
-	} else {
+	} else if g.DWR.Active {
 		g.DWR.Move()
-		if g.Player.X+PlayerBaseSize*g.Player.SizeMult > float32(g.DWR.X)+12 {
+		if g.Player.X+PlayerBaseSize*g.Player.SizeMult > float32(g.DWR.X)+DWSafeZone {
 			if !InvincibleMode {
 				g.Mode = "gameover"
 				go SendScore(g.Score)
@@ -79,13 +79,13 @@ func (g *Game) GameModeUpdate() int {
 		if enemy.Alive {
 			enemy.Move()
 			if g.DWL.Active {
-				if enemy.X < float32(g.DWL.X)+DWWidth {
+				if enemy.X < float32(g.DWL.X)+DWWidth-DWSafeZone {
 					enemy.Alive = false
 					continue
 				}
 			}
 			if g.DWR.Active {
-				if enemy.X+EnemyW > float32(g.DWR.X) {
+				if enemy.X+EnemyW > float32(g.DWR.X)+DWSafeZone {
 					enemy.Alive = false
 					continue
 				}

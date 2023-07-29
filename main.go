@@ -28,6 +28,7 @@ const (
 	EnemySpawnTime = time.Millisecond * 50
 	StoppingMult   = 4
 	DWWidth        = 800
+	DWSafeZone     = 80
 	VERSION        = "0.2.0"
 )
 
@@ -46,6 +47,8 @@ var (
 	LinearImage     *ebiten.Image
 	DWLImage        *ebiten.Image
 	DWRImage        *ebiten.Image
+	DWWLImage       *ebiten.Image // death wall warning
+	DWWRImage       *ebiten.Image // death wall warning
 	InvincibleMode  bool
 	UserName        string
 	ApiPass         string
@@ -65,6 +68,8 @@ type Game struct {
 	Mode        string
 	DWL         DW
 	DWR         DW
+	ShowDWWL    bool
+	ShowDWWR    bool
 }
 
 func (g *Game) Update() error {
@@ -143,6 +148,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			enemyOp.GeoM.Reset()
 		}
 
+		// Death Walls warnings
+		if g.ShowDWWL {
+			screen.DrawImage(DWWLImage, nil)
+		}
+
+		if g.ShowDWWR {
+			DWWROp := &ebiten.DrawImageOptions{}
+			DWWROp.GeoM.Translate(1200, 0)
+			screen.DrawImage(DWWRImage, DWWROp)
+		}
+
 		// Death Walls ☠️
 		if g.DWL.Active {
 			dwlOp := &ebiten.DrawImageOptions{}
@@ -189,8 +205,10 @@ func main() {
 		TimerSystem: ebitick.NewTimerSystem(),
 		Score:       0,
 		Mode:        "title",
-		DWL:         DW{Image: DWLImage, Active: false, Rad: 0, X: -DWWidth, Side: "left"},
-		DWR:         DW{Image: DWRImage, Active: false, Rad: 0, X: ScreenWidth, Side: "right"},
+		DWL:         DW{Image: DWLImage, Active: false, IsSpawning: false, Rad: 0, X: -DWWidth, Side: "left"},
+		DWR:         DW{Image: DWRImage, Active: false, IsSpawning: false, Rad: 0, X: ScreenWidth, Side: "right"},
+		ShowDWWL:    false,
+		ShowDWWR:    false,
 	}
 	game.TimerSystem.After(EnemySpawnTime, func() {
 		SpawnEnemies(game)

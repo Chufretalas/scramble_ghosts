@@ -7,6 +7,8 @@ func (g *Game) ResetGame() {
 	g.Player.X = ScreenWidth/2 - 15
 	g.Player.Y = ScreenHeight - 30
 	g.Score = 0
+	g.ShowDWWL = false
+	g.ShowDWWR = false
 	g.DWL.Reset()
 	g.DWR.Reset()
 }
