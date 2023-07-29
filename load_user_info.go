@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
 	"os"
 	"strings"
+
+	"github.com/Chufretalas/scramble_ghosts/utils"
 )
 
 // TODO: remove the pass stuff from here?
@@ -19,7 +20,7 @@ func LoadUserInfo() {
 		file, createError := os.Create("./user_info.txt")
 		if createError != nil {
 			file.Close()
-			log.Fatal("error trying to create a user_info.txt, file try creating it manually in the same folder as the game")
+			utils.ErrorAndDie("error trying to create a user_info.txt, file try creating it manually in the same folder as the game")
 		}
 		file.WriteString("open_user_info.txt_and_write_a_name")
 		file.Close()
@@ -30,7 +31,7 @@ func LoadUserInfo() {
 	contents, err = os.ReadFile("./user_info.txt")
 
 	if err != nil {
-		log.Fatal("something went worng when reading the user_info.txt file")
+		utils.ErrorAndDie("something went worng when reading the user_info.txt file: " + err.Error())
 	}
 
 	lines := strings.Split(string(contents), "\n")

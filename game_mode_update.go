@@ -1,6 +1,8 @@
 package main
 
 import (
+	"math/rand"
+
 	"github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -37,10 +39,57 @@ func (g *Game) GameModeUpdate() int {
 		}
 	}
 
+	// spawn DWs, move them and check for collision with the player
+	if !g.DWL.Active {
+		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 < ScreenWidth*0.35 {
+			if n := rand.Int31n(500); n == 10 {
+				g.DWL.Active = true
+			}
+		}
+	} else {
+		g.DWL.Move()
+		if g.Player.X+12 < float32(g.DWL.X)+DWWidth {
+			if !InvincibleMode {
+				g.Mode = "gameover"
+				go SendScore(g.Score)
+				return 0
+			}
+		}
+	}
+
+	if !g.DWR.Active {
+		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 > ScreenWidth*0.65 {
+			if n := rand.Int31n(500); n == 10 {
+				g.DWR.Active = true
+			}
+		}
+	} else {
+		g.DWR.Move()
+		if g.Player.X+PlayerBaseSize*g.Player.SizeMult > float32(g.DWR.X)+12 {
+			if !InvincibleMode {
+				g.Mode = "gameover"
+				go SendScore(g.Score)
+				return 0
+			}
+		}
+	}
+
 	// move enemies and check for collisions
 	for _, enemy := range g.Enemies {
 		if enemy.Alive {
 			enemy.Move()
+			if g.DWL.Active {
+				if enemy.X < float32(g.DWL.X)+DWWidth {
+					enemy.Alive = false
+					continue
+				}
+			}
+			if g.DWR.Active {
+				if enemy.X+EnemyW > float32(g.DWR.X) {
+					enemy.Alive = false
+					continue
+				}
+			}
 			if enemy.X+enemy.Width < 0 || enemy.X > ScreenWidth || enemy.Y > ScreenHeight || enemy.Y < -(enemy.Height*2) {
 				enemy.Alive = false
 				continue

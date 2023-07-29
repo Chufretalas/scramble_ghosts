@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	u "github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
@@ -35,7 +36,7 @@ func LoadImages() {
 	titleImage, _, imageError = ebitenutil.NewImageFromFile("./assets/title_screen_4k_16-9.png")
 
 	if imageError != nil {
-		log.Fatal("Title image did not load " + imageError.Error())
+		u.ErrorAndDie("Title image did not load " + imageError.Error())
 	}
 
 	imageError = nil
@@ -43,7 +44,7 @@ func LoadImages() {
 	gameoverImage, _, imageError = ebitenutil.NewImageFromFile("./assets/gamover_screen_1080p.png")
 
 	if imageError != nil {
-		log.Fatal("Gameover image did not load " + imageError.Error())
+		u.ErrorAndDie("Gameover image did not load " + imageError.Error())
 	}
 
 	imageError = nil
@@ -51,7 +52,7 @@ func LoadImages() {
 	bulletImage, _, imageError = ebitenutil.NewImageFromFile("./assets/bullet_30x30.png")
 
 	if imageError != nil {
-		log.Fatal("Bullet image did not load " + imageError.Error())
+		u.ErrorAndDie("Bullet image did not load " + imageError.Error())
 	}
 
 	imageError = nil
@@ -59,7 +60,7 @@ func LoadImages() {
 	playerImage, _, imageError = ebitenutil.NewImageFromFile("./assets/player_40x40.png")
 
 	if imageError != nil {
-		log.Fatal("Player sprite image did not load " + imageError.Error())
+		u.ErrorAndDie("Player sprite image did not load " + imageError.Error())
 	}
 
 	imageError = nil
@@ -67,7 +68,7 @@ func LoadImages() {
 	LinearImage, _, imageError = ebitenutil.NewImageFromFile("./assets/linear_50x50.png")
 
 	if imageError != nil {
-		log.Fatal("Linear enemy sprite image did not load " + imageError.Error())
+		u.ErrorAndDie("Linear enemy sprite image did not load " + imageError.Error())
 	}
 
 	imageError = nil
@@ -75,7 +76,7 @@ func LoadImages() {
 	CurveLImage, _, imageError = ebitenutil.NewImageFromFile("./assets/curve_l_50x50.png")
 
 	if imageError != nil {
-		log.Fatal("CurveL enemy sprite image did not load " + imageError.Error())
+		u.ErrorAndDie("CurveL enemy sprite image did not load " + imageError.Error())
 	}
 
 	imageError = nil
@@ -83,7 +84,24 @@ func LoadImages() {
 	CurveRImage, _, imageError = ebitenutil.NewImageFromFile("./assets/curve_r_50x50.png")
 
 	if imageError != nil {
-		log.Fatal("CurveR enemy sprite image did not load " + imageError.Error())
+		u.ErrorAndDie("CurveR enemy sprite image did not load " + imageError.Error())
 	}
 
+	imageError = nil
+
+	DWLImage, _, imageError = ebitenutil.NewImageFromFile("./assets/deathwall_l.png")
+
+	if imageError != nil {
+		u.ErrorAndDie("DWL sprite image did not load " + imageError.Error())
+	}
+
+	imageError = nil
+
+	DWRImage, _, imageError = ebitenutil.NewImageFromFile("./assets/deathwall_r.png")
+
+	if imageError != nil {
+		u.ErrorAndDie("DWR sprite image did not load: " + imageError.Error())
+	}
+
+	imageError = nil
 }

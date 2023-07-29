@@ -27,7 +27,8 @@ const (
 	EnemyH         = 50
 	EnemySpawnTime = time.Millisecond * 50
 	StoppingMult   = 4
-	VERSION        = "0.1.1"
+	DWWidth        = 800
+	VERSION        = "0.2.0"
 )
 
 var (
@@ -43,6 +44,8 @@ var (
 	CurveLImage     *ebiten.Image
 	CurveRImage     *ebiten.Image
 	LinearImage     *ebiten.Image
+	DWLImage        *ebiten.Image
+	DWRImage        *ebiten.Image
 	InvincibleMode  bool
 	UserName        string
 	ApiPass         string
@@ -60,6 +63,8 @@ type Game struct {
 	TimerSystem *ebitick.TimerSystem
 	Score       int
 	Mode        string
+	DWL         DW
+	DWR         DW
 }
 
 func (g *Game) Update() error {
@@ -103,7 +108,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, ScreenWidth/2-textSize.Size().X/2, ScreenHeight/2-30, color.White)
 	} else {
 		if showDebug {
-			ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies)))
+			ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\nDWL X:%v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies), g.DWL.X))
 		}
 
 		for _, bullet := range g.Bullets {
@@ -136,6 +141,19 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			}
 			enemyOp.ColorScale.Reset()
 			enemyOp.GeoM.Reset()
+		}
+
+		// Death Walls ☠️
+		if g.DWL.Active {
+			dwlOp := &ebiten.DrawImageOptions{}
+			dwlOp.GeoM.Translate(g.DWL.X, 0)
+			screen.DrawImage(g.DWL.Image, dwlOp)
+		}
+
+		if g.DWR.Active {
+			dwrOp := &ebiten.DrawImageOptions{}
+			dwrOp.GeoM.Translate(g.DWR.X, 0)
+			screen.DrawImage(g.DWR.Image, dwrOp)
 		}
 
 		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 20, 40, color.White)
@@ -171,6 +189,8 @@ func main() {
 		TimerSystem: ebitick.NewTimerSystem(),
 		Score:       0,
 		Mode:        "title",
+		DWL:         DW{Image: DWLImage, Active: false, Rad: 0, X: -DWWidth, Side: "left"},
+		DWR:         DW{Image: DWRImage, Active: false, Rad: 0, X: ScreenWidth, Side: "right"},
 	}
 	game.TimerSystem.After(EnemySpawnTime, func() {
 		SpawnEnemies(game)
