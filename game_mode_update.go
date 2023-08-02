@@ -50,8 +50,7 @@ func (g *Game) GameModeUpdate() int {
 		g.DWL.Move()
 		if g.Player.X < float32(g.DWL.X)+DWWidth-DWSafeZone {
 			if !InvincibleMode {
-				g.Mode = "gameover"
-				go SendScore(g.Score)
+				g.Die()
 				return 0
 			}
 		}
@@ -67,8 +66,7 @@ func (g *Game) GameModeUpdate() int {
 		g.DWR.Move()
 		if g.Player.X+PlayerBaseSize*g.Player.SizeMult > float32(g.DWR.X)+DWSafeZone {
 			if !InvincibleMode {
-				g.Mode = "gameover"
-				go SendScore(g.Score)
+				g.Die()
 				return 0
 			}
 		}
@@ -106,8 +104,7 @@ func (g *Game) GameModeUpdate() int {
 			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X+6, g.Player.Y+6, PlayerBaseSize*g.Player.SizeMult-12, PlayerBaseSize*g.Player.SizeMult-12) && enemy.Alive {
 				enemy.Hit = true
 				if !InvincibleMode {
-					g.Mode = "gameover"
-					go SendScore(g.Score)
+					g.Die()
 					return 0
 				}
 			} else {

@@ -50,8 +50,9 @@ var (
 	DWWLImage       *ebiten.Image // death wall warning
 	DWWRImage       *ebiten.Image // death wall warning
 	InvincibleMode  bool
-	UserName        string
-	ApiPass         string
+	UInfo           UserInfo
+	LDConnected     bool // TODO: make an endpoint to check if all the leaderboard info is correct
+	GotHighscore    bool
 )
 
 type Bullet struct {
@@ -106,7 +107,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		userNameOp := &ebiten.DrawImageOptions{}
 		userNameOp.GeoM.Scale(0.5, 0.5)
 		userNameOp.GeoM.Translate(10, ScreenHeight-45)
-		text.DrawWithOptions(screen, fmt.Sprintf("User Name: %v", UserName), MyEpicGamerFont, userNameOp)
+		text.DrawWithOptions(screen, fmt.Sprintf("User Name: %v", UInfo.Name), MyEpicGamerFont, userNameOp)
 	} else if g.Mode == "gameover" {
 		screen.DrawImage(gameoverImage, &ebiten.DrawImageOptions{})
 		textSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("Score: %v", g.Score))
@@ -172,6 +173,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			screen.DrawImage(g.DWR.Image, dwrOp)
 		}
 
+		// Score 🏆
 		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 20, 40, color.White)
 	}
 }
@@ -191,6 +193,7 @@ func main() {
 
 	showDebug = false
 	InvincibleMode = false
+	GotHighscore = false
 
 	LoadUserInfo()
 
