@@ -49,6 +49,14 @@ func LoadImages() {
 
 	imageError = nil
 
+	gameoverImageHS, _, imageError = ebitenutil.NewImageFromFile("./assets/gamover_screen_hs.png")
+
+	if imageError != nil {
+		u.ErrorAndDie("Highscore Gameover image did not load " + imageError.Error())
+	}
+
+	imageError = nil
+
 	bulletImage, _, imageError = ebitenutil.NewImageFromFile("./assets/bullet_30x30.png")
 
 	if imageError != nil {

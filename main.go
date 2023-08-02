@@ -40,6 +40,7 @@ var (
 	showDebug       bool
 	titleImage      *ebiten.Image
 	gameoverImage   *ebiten.Image
+	gameoverImageHS *ebiten.Image
 	bulletImage     *ebiten.Image
 	playerImage     *ebiten.Image
 	CurveLImage     *ebiten.Image
@@ -109,9 +110,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		userNameOp.GeoM.Translate(10, ScreenHeight-45)
 		text.DrawWithOptions(screen, fmt.Sprintf("User Name: %v", UInfo.Name), MyEpicGamerFont, userNameOp)
 	} else if g.Mode == "gameover" {
-		screen.DrawImage(gameoverImage, &ebiten.DrawImageOptions{})
-		textSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("Score: %v", g.Score))
-		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, ScreenWidth/2-textSize.Size().X/2, ScreenHeight/2-30, color.White)
+		if GotHighscore {
+			screen.DrawImage(gameoverImageHS, &ebiten.DrawImageOptions{})
+			textSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("New Highscore: %v", g.Score))
+			text.Draw(screen, fmt.Sprintf("New Highscore: %v", g.Score), MyEpicGamerFont, ScreenWidth/2-textSize.Size().X/2, ScreenHeight/2-30, color.White)
+		} else {
+			screen.DrawImage(gameoverImage, &ebiten.DrawImageOptions{})
+			textSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("Score: %v", g.Score))
+			text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, ScreenWidth/2-textSize.Size().X/2, ScreenHeight/2-70, color.White)
+			hsTextSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("Current Highscore: %v", UInfo.Highscore))
+			text.Draw(screen, fmt.Sprintf("Current Highscore: %v", UInfo.Highscore), MyEpicGamerFont, ScreenWidth/2-hsTextSize.Size().X/2, ScreenHeight/2-5, color.White)
+		}
 	} else {
 		if showDebug {
 			ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\nDWL X:%v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies), g.DWL.X))

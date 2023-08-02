@@ -8,6 +8,7 @@ import (
 func (g *Game) GameoverModeUpdate() {
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		g.Mode = "game"
+		GotHighscore = false
 		g.ResetGame()
 		return
 	}
