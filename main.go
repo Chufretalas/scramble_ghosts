@@ -29,7 +29,7 @@ const (
 	StoppingMult   = 4
 	DWWidth        = 800
 	DWSafeZone     = 80
-	VERSION        = "0.2.0"
+	VERSION        = "0.2.1"
 )
 
 var (
