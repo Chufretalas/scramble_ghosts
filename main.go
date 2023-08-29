@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"image/color"
 	"log"
+	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -29,31 +31,33 @@ const (
 	StoppingMult   = 4
 	DWWidth        = 800
 	DWSafeZone     = 80
-	VERSION        = "0.2.1"
+	VERSION        = "0.2.2"
 )
 
 var (
-	bulletsToRemove []int
-	ShotDelay       time.Duration
-	CanShoot        bool
-	MyEpicGamerFont font.Face
-	showDebug       bool
-	titleImage      *ebiten.Image
-	gameoverImage   *ebiten.Image
-	gameoverImageHS *ebiten.Image
-	bulletImage     *ebiten.Image
-	playerImage     *ebiten.Image
-	CurveLImage     *ebiten.Image
-	CurveRImage     *ebiten.Image
-	LinearImage     *ebiten.Image
-	DWLImage        *ebiten.Image
-	DWRImage        *ebiten.Image
-	DWWLImage       *ebiten.Image // death wall warning
-	DWWRImage       *ebiten.Image // death wall warning
-	InvincibleMode  bool
-	UInfo           UserInfo
-	LDConnected     bool // TODO: make an endpoint to check if all the leaderboard info is correct
-	GotHighscore    bool
+	bulletsToRemove     []int
+	ShotDelay           time.Duration
+	CanShoot            bool
+	MyEpicGamerFont     font.Face
+	showDebug           bool
+	titleImage          *ebiten.Image
+	LDButtonImage       *ebiten.Image
+	LDButtonActiveImage *ebiten.Image
+	gameoverImage       *ebiten.Image
+	gameoverImageHS     *ebiten.Image
+	bulletImage         *ebiten.Image
+	playerImage         *ebiten.Image
+	CurveLImage         *ebiten.Image
+	CurveRImage         *ebiten.Image
+	LinearImage         *ebiten.Image
+	DWLImage            *ebiten.Image
+	DWRImage            *ebiten.Image
+	DWWLImage           *ebiten.Image // death wall warning
+	DWWRImage           *ebiten.Image // death wall warning
+	InvincibleMode      bool
+	UInfo               UserInfo
+	LDConnection        string
+	GotHighscore        bool
 )
 
 type Bullet struct {
@@ -85,6 +89,22 @@ func (g *Game) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 			g.Mode = "game"
 		}
+		if x, y := ebiten.CursorPosition(); x <= 350 && y <= 200 && inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) { // thanks to: https://gist.github.com/sevkin/9798d67b2cb9d07cb05f89f14ba682f8
+			var cmd string
+			var args []string
+
+			switch runtime.GOOS {
+			case "windows":
+				cmd = "cmd"
+				args = []string{"/c", "start"}
+			case "darwin":
+				cmd = "open"
+			default: // "linux", "freebsd", "openbsd", "netbsd"
+				cmd = "xdg-open"
+			}
+			args = append(args, UInfo.LD_URL)
+			return exec.Command(cmd, args...).Start()
+		}
 	case "game":
 		g.GameModeUpdate()
 	case "gameover":
@@ -100,14 +120,28 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		titleOp.GeoM.Scale(0.5, 0.5)
 		screen.DrawImage(titleImage, titleOp)
 
+		if LDConnection == "ok" {
+			ldButtonOP := &ebiten.DrawImageOptions{}
+			if x, y := ebiten.CursorPosition(); x <= 350 && y <= 200 {
+				screen.DrawImage(LDButtonActiveImage, ldButtonOP)
+			} else {
+				screen.DrawImage(LDButtonImage, ldButtonOP)
+			}
+		}
+
+		ldConnectionOp := &ebiten.DrawImageOptions{}
+		ldConnectionOp.GeoM.Scale(0.5, 0.5)
+		ldConnectionOp.GeoM.Translate(10, ScreenHeight-5)
+		text.DrawWithOptions(screen, fmt.Sprintf("Leaderboard connection: %v", LDConnection), MyEpicGamerFont, ldConnectionOp)
+
 		versionOp := &ebiten.DrawImageOptions{}
 		versionOp.GeoM.Scale(0.5, 0.5)
-		versionOp.GeoM.Translate(10, ScreenHeight-20)
+		versionOp.GeoM.Translate(10, ScreenHeight-30)
 		text.DrawWithOptions(screen, fmt.Sprintf("Version: %v", VERSION), MyEpicGamerFont, versionOp)
 
 		userNameOp := &ebiten.DrawImageOptions{}
 		userNameOp.GeoM.Scale(0.5, 0.5)
-		userNameOp.GeoM.Translate(10, ScreenHeight-45)
+		userNameOp.GeoM.Translate(10, ScreenHeight-55)
 		text.DrawWithOptions(screen, fmt.Sprintf("User Name: %v", UInfo.Name), MyEpicGamerFont, userNameOp)
 	} else if g.Mode == "gameover" {
 		if GotHighscore {
@@ -205,6 +239,9 @@ func main() {
 	GotHighscore = false
 
 	LoadUserInfo()
+
+	LDConnection = "waiting..."
+	go CheckLDConnection()
 
 	LoadFont()
 

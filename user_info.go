@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	u "github.com/Chufretalas/scramble_ghosts/utils"
 )
@@ -29,7 +30,6 @@ func checkForUIFile() {
 	}
 }
 
-// TODO: remove the pass stuff from here?
 func LoadUserInfo() {
 
 	checkForUIFile()
@@ -41,7 +41,7 @@ func LoadUserInfo() {
 	}
 
 	json.Unmarshal([]byte(contents), &UInfo)
-
+	UInfo.LD_URL, _ = strings.CutSuffix(UInfo.LD_URL, "/")
 }
 
 func SaveHighscore() {

@@ -128,4 +128,20 @@ func LoadImages() {
 	}
 
 	imageError = nil
+
+	LDButtonImage, _, imageError = ebitenutil.NewImageFromFile("./assets/ldbutton.png")
+
+	if imageError != nil {
+		u.ErrorAndDie("ldbutton image image did not load: " + imageError.Error())
+	}
+
+	imageError = nil
+
+	LDButtonActiveImage, _, imageError = ebitenutil.NewImageFromFile("./assets/ldbutton_active.png")
+
+	if imageError != nil {
+		u.ErrorAndDie("ldbutton image image did not load: " + imageError.Error())
+	}
+
+	imageError = nil
 }
