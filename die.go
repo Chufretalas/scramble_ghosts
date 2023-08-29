@@ -5,7 +5,7 @@ func (g *Game) Die() {
 	if g.Score > UInfo.Highscore {
 		UInfo.Highscore = g.Score
 		GotHighscore = true
-		go SaveHighscore()
+		go UpdateUserInfo()
 		go SendScore()
 	} else {
 		GotHighscore = false

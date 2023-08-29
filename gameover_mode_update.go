@@ -13,7 +13,7 @@ func (g *Game) GameoverModeUpdate() {
 		return
 	}
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		g.Mode = "title"
 		g.ResetGame()
 		return

@@ -2,18 +2,13 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"image/color"
 	"log"
-	"os/exec"
-	"runtime"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/solarlune/ebitick"
+	"golang.design/x/clipboard"
 	"golang.org/x/image/font"
 
 	_ "github.com/silbinarywolf/preferdiscretegpu"
@@ -58,6 +53,8 @@ var (
 	UInfo               UserInfo
 	LDConnection        string
 	GotHighscore        bool
+	editSelected        string
+	canUseClipboard     bool
 )
 
 type Bullet struct {
@@ -76,148 +73,39 @@ type Game struct {
 	DWR         DW
 	ShowDWWL    bool
 	ShowDWWR    bool
+	EditText    string
+	EditRunes   []rune
 }
 
 func (g *Game) Update() error {
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return errors.New("ahahaha")
-	}
-
 	switch g.Mode {
 	case "title":
-		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-			g.Mode = "game"
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			return errors.New("ahahaha")
 		}
-		if x, y := ebiten.CursorPosition(); x <= 350 && y <= 200 && inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) { // thanks to: https://gist.github.com/sevkin/9798d67b2cb9d07cb05f89f14ba682f8
-			var cmd string
-			var args []string
-
-			switch runtime.GOOS {
-			case "windows":
-				cmd = "cmd"
-				args = []string{"/c", "start"}
-			case "darwin":
-				cmd = "open"
-			default: // "linux", "freebsd", "openbsd", "netbsd"
-				cmd = "xdg-open"
-			}
-			args = append(args, UInfo.LD_URL)
-			return exec.Command(cmd, args...).Start()
-		}
-	case "game":
-		g.GameModeUpdate()
+		g.TitleUpdate()
 	case "gameover":
 		g.GameoverModeUpdate()
+	case "game":
+		g.GameModeUpdate()
+	case "edit":
+		g.EditModeUpdate()
 	}
 
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	if g.Mode == "title" {
-		titleOp := &ebiten.DrawImageOptions{}
-		titleOp.GeoM.Scale(0.5, 0.5)
-		screen.DrawImage(titleImage, titleOp)
-
-		if LDConnection == "ok" {
-			ldButtonOP := &ebiten.DrawImageOptions{}
-			if x, y := ebiten.CursorPosition(); x <= 350 && y <= 200 {
-				screen.DrawImage(LDButtonActiveImage, ldButtonOP)
-			} else {
-				screen.DrawImage(LDButtonImage, ldButtonOP)
-			}
-		}
-
-		ldConnectionOp := &ebiten.DrawImageOptions{}
-		ldConnectionOp.GeoM.Scale(0.5, 0.5)
-		ldConnectionOp.GeoM.Translate(10, ScreenHeight-5)
-		text.DrawWithOptions(screen, fmt.Sprintf("Leaderboard connection: %v", LDConnection), MyEpicGamerFont, ldConnectionOp)
-
-		versionOp := &ebiten.DrawImageOptions{}
-		versionOp.GeoM.Scale(0.5, 0.5)
-		versionOp.GeoM.Translate(10, ScreenHeight-30)
-		text.DrawWithOptions(screen, fmt.Sprintf("Version: %v", VERSION), MyEpicGamerFont, versionOp)
-
-		userNameOp := &ebiten.DrawImageOptions{}
-		userNameOp.GeoM.Scale(0.5, 0.5)
-		userNameOp.GeoM.Translate(10, ScreenHeight-55)
-		text.DrawWithOptions(screen, fmt.Sprintf("User Name: %v", UInfo.Name), MyEpicGamerFont, userNameOp)
-	} else if g.Mode == "gameover" {
-		if GotHighscore {
-			screen.DrawImage(gameoverImageHS, &ebiten.DrawImageOptions{})
-			textSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("New Highscore: %v", g.Score))
-			text.Draw(screen, fmt.Sprintf("New Highscore: %v", g.Score), MyEpicGamerFont, ScreenWidth/2-textSize.Size().X/2, ScreenHeight/2-30, color.White)
-		} else {
-			screen.DrawImage(gameoverImage, &ebiten.DrawImageOptions{})
-			textSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("Score: %v", g.Score))
-			text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, ScreenWidth/2-textSize.Size().X/2, ScreenHeight/2-70, color.White)
-			hsTextSize := text.BoundString(MyEpicGamerFont, fmt.Sprintf("Current Highscore: %v", UInfo.Highscore))
-			text.Draw(screen, fmt.Sprintf("Current Highscore: %v", UInfo.Highscore), MyEpicGamerFont, ScreenWidth/2-hsTextSize.Size().X/2, ScreenHeight/2-5, color.White)
-		}
-	} else {
-		if showDebug {
-			ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\nDWL X:%v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies), g.DWL.X))
-		}
-
-		for _, bullet := range g.Bullets {
-			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
-			screen.DrawImage(bulletImage, op)
-		}
-
-		// draw player
-		playerOp := &ebiten.DrawImageOptions{}
-		playerOp.GeoM.Translate(float64(g.Player.X), float64(g.Player.Y))
-
-		screen.DrawImage(playerImage, playerOp)
-
-		// draw enemies
-		enemyOp := &ebiten.DrawImageOptions{}
-		for _, enemy := range g.Enemies {
-			if enemy.Hit {
-				enemyOp.ColorScale.SetB(255)
-				enemyOp.ColorScale.SetG(100)
-			}
-			enemyOp.GeoM.Translate(float64(enemy.X), float64(enemy.Y))
-			switch enemy.Type {
-			case Linear:
-				screen.DrawImage(LinearImage, enemyOp)
-			case CurveL:
-				screen.DrawImage(CurveLImage, enemyOp)
-			case CurveR:
-				screen.DrawImage(CurveRImage, enemyOp)
-			}
-			enemyOp.ColorScale.Reset()
-			enemyOp.GeoM.Reset()
-		}
-
-		// Death Walls warnings
-		if g.ShowDWWL {
-			screen.DrawImage(DWWLImage, nil)
-		}
-
-		if g.ShowDWWR {
-			DWWROp := &ebiten.DrawImageOptions{}
-			DWWROp.GeoM.Translate(1200, 0)
-			screen.DrawImage(DWWRImage, DWWROp)
-		}
-
-		// Death Walls ☠️
-		if g.DWL.Active {
-			dwlOp := &ebiten.DrawImageOptions{}
-			dwlOp.GeoM.Translate(g.DWL.X, 0)
-			screen.DrawImage(g.DWL.Image, dwlOp)
-		}
-
-		if g.DWR.Active {
-			dwrOp := &ebiten.DrawImageOptions{}
-			dwrOp.GeoM.Translate(g.DWR.X, 0)
-			screen.DrawImage(g.DWR.Image, dwrOp)
-		}
-
-		// Score 🏆
-		text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 20, 40, color.White)
+	switch g.Mode {
+	case "title":
+		g.TitleDraw(screen)
+	case "gameover":
+		g.GameoverModeDraw(screen)
+	case "game":
+		g.GameModeDraw(screen)
+	case "edit":
+		g.EditModeDraw(screen)
 	}
 }
 
@@ -233,6 +121,13 @@ func SpawnEnemies(g *Game) {
 }
 
 func main() {
+
+	err := clipboard.Init()
+	if err != nil {
+		canUseClipboard = false
+	} else {
+		canUseClipboard = true
+	}
 
 	showDebug = false
 	InvincibleMode = false
@@ -258,6 +153,7 @@ func main() {
 		DWR:         DW{Image: DWRImage, Active: false, IsSpawning: false, Rad: 0, X: ScreenWidth, Side: "right"},
 		ShowDWWL:    false,
 		ShowDWWR:    false,
+		EditText:    "",
 	}
 	game.TimerSystem.After(EnemySpawnTime, func() {
 		SpawnEnemies(game)
