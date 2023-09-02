@@ -65,10 +65,10 @@ func LoadImages() {
 
 	imageError = nil
 
-	playerImage, _, imageError = ebitenutil.NewImageFromFile("./assets/player_40x40.png")
+	playerSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/player_spritesheet.png")
 
 	if imageError != nil {
-		u.ErrorAndDie("Player sprite image did not load " + imageError.Error())
+		u.ErrorAndDie("Player sprite sheet did not load " + imageError.Error())
 	}
 
 	imageError = nil

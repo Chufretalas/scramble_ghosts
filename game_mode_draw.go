@@ -24,7 +24,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	playerOp := &ebiten.DrawImageOptions{}
 	playerOp.GeoM.Translate(float64(g.Player.X), float64(g.Player.Y))
 
-	screen.DrawImage(playerImage, playerOp)
+	screen.DrawImage(g.Player.GetSprite(), playerOp)
 
 	// draw enemies
 	enemyOp := &ebiten.DrawImageOptions{}

@@ -41,7 +41,7 @@ var (
 	gameoverImage       *ebiten.Image
 	gameoverImageHS     *ebiten.Image
 	bulletImage         *ebiten.Image
-	playerImage         *ebiten.Image
+	playerSheet         *ebiten.Image
 	CurveLImage         *ebiten.Image
 	CurveRImage         *ebiten.Image
 	LinearImage         *ebiten.Image

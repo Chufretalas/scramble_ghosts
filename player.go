@@ -1,6 +1,8 @@
 package main
 
 import (
+	"image"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -13,6 +15,18 @@ type Player struct {
 	X, Y     float32
 	SizeMult float32
 	VX, VY   float32
+}
+
+func (p *Player) GetSprite() *ebiten.Image {
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+		return playerSheet.SubImage(image.Rect(40, 0, 80, 40)).(*ebiten.Image)
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+		return playerSheet.SubImage(image.Rect(80, 0, 120, 40)).(*ebiten.Image)
+	}
+
+	return playerSheet.SubImage(image.Rect(0, 0, 40, 40)).(*ebiten.Image)
 }
 
 func (p *Player) Move(maxV, acc float32) {
