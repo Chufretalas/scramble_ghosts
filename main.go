@@ -35,15 +35,15 @@ var (
 	CanShoot            bool
 	MyEpicGamerFont     font.Face
 	showDebug           bool
-	titleImage          *ebiten.Image
+	TitleImage          *ebiten.Image
 	LDButtonImage       *ebiten.Image
 	LDButtonActiveImage *ebiten.Image
-	gameoverImage       *ebiten.Image
-	gameoverImageHS     *ebiten.Image
-	bulletImage         *ebiten.Image
-	playerSheet         *ebiten.Image
-	CurveLImage         *ebiten.Image
-	CurveRImage         *ebiten.Image
+	GameoverImage       *ebiten.Image
+	GameoverImageHS     *ebiten.Image
+	BulletImage         *ebiten.Image
+	PlayerSheet         *ebiten.Image
+	CurveLSheet         *ebiten.Image
+	CurveRSheet         *ebiten.Image
 	LinearImage         *ebiten.Image
 	DWLImage            *ebiten.Image
 	DWRImage            *ebiten.Image

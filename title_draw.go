@@ -10,7 +10,7 @@ import (
 func (g *Game) TitleDraw(screen *ebiten.Image) {
 	titleOp := &ebiten.DrawImageOptions{}
 	titleOp.GeoM.Scale(0.5, 0.5)
-	screen.DrawImage(titleImage, titleOp)
+	screen.DrawImage(TitleImage, titleOp)
 
 	if LDConnection == "ok" {
 		ldButtonOP := &ebiten.DrawImageOptions{}

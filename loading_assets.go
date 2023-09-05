@@ -33,7 +33,7 @@ func LoadImages() {
 
 	var imageError error
 
-	titleImage, _, imageError = ebitenutil.NewImageFromFile("./assets/title_screen_4k_16-9.png")
+	TitleImage, _, imageError = ebitenutil.NewImageFromFile("./assets/title_screen_4k_16-9.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Title image did not load " + imageError.Error())
@@ -41,7 +41,7 @@ func LoadImages() {
 
 	imageError = nil
 
-	gameoverImage, _, imageError = ebitenutil.NewImageFromFile("./assets/gamover_screen_1080p.png")
+	GameoverImage, _, imageError = ebitenutil.NewImageFromFile("./assets/gamover_screen_1080p.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Gameover image did not load " + imageError.Error())
@@ -49,7 +49,7 @@ func LoadImages() {
 
 	imageError = nil
 
-	gameoverImageHS, _, imageError = ebitenutil.NewImageFromFile("./assets/gamover_screen_hs.png")
+	GameoverImageHS, _, imageError = ebitenutil.NewImageFromFile("./assets/gamover_screen_hs.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Highscore Gameover image did not load " + imageError.Error())
@@ -57,7 +57,7 @@ func LoadImages() {
 
 	imageError = nil
 
-	bulletImage, _, imageError = ebitenutil.NewImageFromFile("./assets/bullet_30x30.png")
+	BulletImage, _, imageError = ebitenutil.NewImageFromFile("./assets/bullet_30x30.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Bullet image did not load " + imageError.Error())
@@ -65,7 +65,7 @@ func LoadImages() {
 
 	imageError = nil
 
-	playerSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/player_spritesheet.png")
+	PlayerSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/player_spritesheet.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Player sprite sheet did not load " + imageError.Error())
@@ -81,18 +81,18 @@ func LoadImages() {
 
 	imageError = nil
 
-	CurveLImage, _, imageError = ebitenutil.NewImageFromFile("./assets/curve_l_50x50.png")
+	CurveLSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/curve_spritesheet_l.png")
 
 	if imageError != nil {
-		u.ErrorAndDie("CurveL enemy sprite image did not load " + imageError.Error())
+		u.ErrorAndDie("CurveL enemy spritesheet image did not load " + imageError.Error())
 	}
 
 	imageError = nil
 
-	CurveRImage, _, imageError = ebitenutil.NewImageFromFile("./assets/curve_r_50x50.png")
+	CurveRSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/curve_spritesheet_r.png")
 
 	if imageError != nil {
-		u.ErrorAndDie("CurveR enemy sprite image did not load " + imageError.Error())
+		u.ErrorAndDie("CurveR enemy spritesheet image did not load " + imageError.Error())
 	}
 
 	imageError = nil

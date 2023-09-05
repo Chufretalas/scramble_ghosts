@@ -17,7 +17,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	for _, bullet := range g.Bullets {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
-		screen.DrawImage(bulletImage, op)
+		screen.DrawImage(BulletImage, op)
 	}
 
 	// draw player
@@ -34,14 +34,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 			enemyOp.ColorScale.SetG(100)
 		}
 		enemyOp.GeoM.Translate(float64(enemy.X), float64(enemy.Y))
-		switch enemy.Type {
-		case Linear:
-			screen.DrawImage(LinearImage, enemyOp)
-		case CurveL:
-			screen.DrawImage(CurveLImage, enemyOp)
-		case CurveR:
-			screen.DrawImage(CurveRImage, enemyOp)
-		}
+		screen.DrawImage(enemy.GetSprite(), enemyOp)
 		enemyOp.ColorScale.Reset()
 		enemyOp.GeoM.Reset()
 	}
