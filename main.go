@@ -63,18 +63,20 @@ type Bullet struct {
 }
 
 type Game struct {
-	Enemies     []*Enemy
-	Bullets     []*Bullet
-	Player      Player
-	TimerSystem *ebitick.TimerSystem
-	Score       int
-	Mode        string
-	DWL         DW
-	DWR         DW
-	ShowDWWL    bool
-	ShowDWWR    bool
-	EditText    string
-	EditRunes   []rune
+	Enemies          []*Enemy
+	Bullets          []*Bullet
+	Player           Player
+	TimerSystem      *ebitick.TimerSystem
+	Score            int
+	FinalScore       int
+	Mode             string
+	DWL              DW
+	DWR              DW
+	ShowDWWL         bool
+	ShowDWWR         bool
+	EditText         string
+	EditRunes        []rune
+	StartedTheTimers bool // such as the enemy spawner
 }
 
 func (g *Game) Update() error {
@@ -113,13 +115,6 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return ScreenWidth, ScreenHeight
 }
 
-func SpawnEnemies(g *Game) {
-	g.TimerSystem.After(EnemySpawnTime, func() {
-		SpawnEnemies(g)
-	})
-	g.Enemies = append(g.Enemies, NewRandomEnemy(ScreenWidth, ScreenHeight, 6))
-}
-
 func main() {
 
 	err := clipboard.Init()
@@ -143,21 +138,19 @@ func main() {
 	LoadImages()
 
 	game := &Game{
-		Enemies:     make([]*Enemy, 0),
-		Bullets:     make([]*Bullet, 0),
-		Player:      Player{X: ScreenWidth/2 - 20, Y: ScreenHeight - 40, SizeMult: 1},
-		TimerSystem: ebitick.NewTimerSystem(),
-		Score:       0,
-		Mode:        "title",
-		DWL:         DW{Image: DWLImage, Active: false, IsSpawning: false, Rad: 0, X: -DWWidth, Side: "left"},
-		DWR:         DW{Image: DWRImage, Active: false, IsSpawning: false, Rad: 0, X: ScreenWidth, Side: "right"},
-		ShowDWWL:    false,
-		ShowDWWR:    false,
-		EditText:    "",
+		Enemies:          make([]*Enemy, 0),
+		Bullets:          make([]*Bullet, 0),
+		Player:           Player{X: ScreenWidth/2 - 20, Y: ScreenHeight - 40, SizeMult: 1},
+		TimerSystem:      ebitick.NewTimerSystem(),
+		Score:            0,
+		Mode:             "title",
+		DWL:              DW{Image: DWLImage, Active: false, IsSpawning: false, Rad: 0, X: -DWWidth, Side: "left"},
+		DWR:              DW{Image: DWRImage, Active: false, IsSpawning: false, Rad: 0, X: ScreenWidth, Side: "right"},
+		ShowDWWL:         false,
+		ShowDWWR:         false,
+		EditText:         "",
+		StartedTheTimers: false,
 	}
-	game.TimerSystem.After(EnemySpawnTime, func() {
-		SpawnEnemies(game)
-	})
 	ShotDelay = time.Millisecond * 200
 	CanShoot = true
 	bulletsToRemove = make([]int, 0)

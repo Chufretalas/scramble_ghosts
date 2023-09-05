@@ -8,8 +8,22 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
+func (g *Game) SpawnEnemies() { // I decided to leave this method here, beacuse it's easier to read next to it's invocation
+	g.TimerSystem.After(EnemySpawnTime, func() {
+		g.SpawnEnemies()
+	})
+	g.Enemies = append(g.Enemies, NewRandomEnemy(ScreenWidth, ScreenHeight, 6))
+}
+
 // 1 should return the Update function and 0 should continue
 func (g *Game) GameModeUpdate() int {
+
+	if !g.StartedTheTimers {
+		g.StartedTheTimers = true
+		g.TimerSystem.After(EnemySpawnTime, func() {
+			g.SpawnEnemies()
+		})
+	}
 
 	g.TimerSystem.Update()
 

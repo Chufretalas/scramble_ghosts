@@ -43,7 +43,7 @@ func CheckLDConnection() {
 	}
 }
 
-func SendScore() {
+func SendScore(score int) {
 	if UInfo.LD_URL == "" || UInfo.LD_Pass == "" {
 		return
 	}

@@ -2,11 +2,14 @@ package main
 
 func (g *Game) Die() {
 	g.Mode = "gameover"
-	if g.Score > UInfo.Highscore {
-		UInfo.Highscore = g.Score
+	g.FinalScore = g.Score
+	g.ResetGame()
+	g.StartedTheTimers = false
+	if g.FinalScore > UInfo.Highscore {
+		UInfo.Highscore = g.FinalScore
 		GotHighscore = true
 		go UpdateUserInfo()
-		go SendScore()
+		go SendScore(g.FinalScore)
 	} else {
 		GotHighscore = false
 	}
