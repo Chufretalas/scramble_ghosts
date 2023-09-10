@@ -66,10 +66,11 @@ func SendScore(score int) {
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	fmt.Println(resp.Status)
 	if err != nil {
 		log.Println("Error on response.\n[ERROR] -", err)
+	} else {
+		fmt.Println(resp.Status)
+		defer resp.Body.Close()
 	}
-	defer resp.Body.Close()
 
 }

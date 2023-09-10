@@ -11,7 +11,7 @@ import (
 
 func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	if showDebug {
-		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\nDWL X:%v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies), g.DWL.X))
+		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\nDWL X: %v\nLevel: %v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies), g.DWL.X, g.Diff.Level))
 	}
 
 	for _, bullet := range g.Bullets {

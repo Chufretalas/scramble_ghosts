@@ -34,7 +34,7 @@ func (dw *DW) Move() {
 			dw.Active = false
 			return
 		}
-		dw.X = ScreenWidth - math.Sin(dw.Rad)*DWWidth
+		dw.X = SCREENWIDTH - math.Sin(dw.Rad)*DWWidth
 	}
 }
 
@@ -46,6 +46,6 @@ func (dw *DW) Reset() {
 	case "left":
 		dw.X = -DWWidth
 	case "right":
-		dw.X = ScreenWidth
+		dw.X = SCREENWIDTH
 	}
 }

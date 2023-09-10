@@ -96,15 +96,15 @@ func (p *Player) Move(maxV, acc float32) {
 	// End actually walk
 
 	//Check bounds
-	if p.X+PlayerBaseSize*p.SizeMult > ScreenWidth {
-		p.X = ScreenWidth - PlayerBaseSize*p.SizeMult
+	if p.X+PlayerBaseSize*p.SizeMult > SCREENWIDTH {
+		p.X = SCREENWIDTH - PlayerBaseSize*p.SizeMult
 	}
 	if p.X < 0 {
 		p.X = 0
 	}
 
-	if p.Y+PlayerBaseSize*p.SizeMult > ScreenHeight {
-		p.Y = ScreenHeight - PlayerBaseSize*p.SizeMult
+	if p.Y+PlayerBaseSize*p.SizeMult > SCREENHEIGHT {
+		p.Y = SCREENHEIGHT - PlayerBaseSize*p.SizeMult
 	}
 	if p.Y < 0 {
 		p.Y = 0

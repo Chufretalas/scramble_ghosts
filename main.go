@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	ScreenWidth    = 1920
-	ScreenHeight   = 1080
+	SCREENWIDTH    = 1920
+	SCREENHEIGHT   = 1080
 	bV             = 6
 	BulletBaseSize = 30
 	PlayerBaseSize = 40
@@ -51,7 +51,7 @@ var (
 	DWWRImage           *ebiten.Image // death wall warning
 	InvincibleMode      bool
 	UInfo               UserInfo
-	LDConnection        string
+	LDConnection        string // anything that is not "ok" should not be trusted
 	GotHighscore        bool
 	editSelected        string
 	canUseClipboard     bool
@@ -76,7 +76,8 @@ type Game struct {
 	ShowDWWR         bool
 	EditText         string
 	EditRunes        []rune
-	StartedTheTimers bool // such as the enemy spawner
+	ShouldSpawnEnemy bool // this has to ne true on the start of the game
+	Diff             Difficulty
 }
 
 func (g *Game) Update() error {
@@ -112,7 +113,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return ScreenWidth, ScreenHeight
+	return SCREENWIDTH, SCREENHEIGHT
 }
 
 func main() {
@@ -140,16 +141,17 @@ func main() {
 	game := &Game{
 		Enemies:          make([]*Enemy, 0),
 		Bullets:          make([]*Bullet, 0),
-		Player:           Player{X: ScreenWidth/2 - 20, Y: ScreenHeight - 40, SizeMult: 1},
+		Player:           Player{X: SCREENWIDTH/2 - 20, Y: SCREENHEIGHT - 40, SizeMult: 1},
 		TimerSystem:      ebitick.NewTimerSystem(),
 		Score:            0,
 		Mode:             "title",
 		DWL:              DW{Image: DWLImage, Active: false, IsSpawning: false, Rad: 0, X: -DWWidth, Side: "left"},
-		DWR:              DW{Image: DWRImage, Active: false, IsSpawning: false, Rad: 0, X: ScreenWidth, Side: "right"},
+		DWR:              DW{Image: DWRImage, Active: false, IsSpawning: false, Rad: 0, X: SCREENWIDTH, Side: "right"},
 		ShowDWWL:         false,
 		ShowDWWR:         false,
 		EditText:         "",
-		StartedTheTimers: false,
+		Diff:             NewDefaultDifficulty(),
+		ShouldSpawnEnemy: true,
 	}
 	ShotDelay = time.Millisecond * 200
 	CanShoot = true

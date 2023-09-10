@@ -2,38 +2,46 @@ package main
 
 import (
 	"math/rand"
+	"time"
 
 	"github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-func (g *Game) SpawnEnemies() { // I decided to leave this method here, beacuse it's easier to read next to it's invocation
-	g.TimerSystem.After(EnemySpawnTime, func() {
-		g.SpawnEnemies()
-	})
-	g.Enemies = append(g.Enemies, NewRandomEnemy(ScreenWidth, ScreenHeight, 6))
-}
-
 // 1 should return the Update function and 0 should continue
 func (g *Game) GameModeUpdate() int {
 
-	if !g.StartedTheTimers {
-		g.StartedTheTimers = true
-		g.TimerSystem.After(EnemySpawnTime, func() {
-			g.SpawnEnemies()
+	g.TimerSystem.Update()
+
+	// increase difficulty
+	if g.Diff.ShouldIncrease {
+		g.Diff.ShouldIncrease = false
+		g.Diff.Increase()
+		g.TimerSystem.After(time.Second*8, func() {
+			g.Diff.ShouldIncrease = true
 		})
 	}
 
-	g.TimerSystem.Update()
+	// spawn enemies
+	if g.ShouldSpawnEnemy {
+		g.ShouldSpawnEnemy = false
+		for i := 0; i < g.Diff.EnemiesPerSpawn; i++ {
+			g.Enemies = append(g.Enemies, NewRandomEnemy(SCREENWIDTH, SCREENHEIGHT, 6))
+		}
+		g.TimerSystem.After(g.Diff.EnemySpawnDelay, func() {
+			g.ShouldSpawnEnemy = true
+		})
+	}
 
+	// debug stuff
 	if inpututil.IsKeyJustPressed(ebiten.KeyI) {
 		InvincibleMode = !InvincibleMode
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		showDebug = !showDebug
-		NewRandomEnemy(ScreenWidth, ScreenHeight, 10)
+		NewRandomEnemy(SCREENWIDTH, SCREENHEIGHT, 10)
 	}
 
 	g.Player.Move(9, 0.8)
@@ -55,7 +63,7 @@ func (g *Game) GameModeUpdate() int {
 
 	// spawn DWs, move them and check for collision with the player
 	if !g.DWL.Active && !g.DWL.IsSpawning {
-		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 < ScreenWidth*0.35 {
+		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 < SCREENWIDTH*0.35 {
 			if n := rand.Int31n(450); n == 10 {
 				g.SpawnDeathWall("left")
 			}
@@ -71,7 +79,7 @@ func (g *Game) GameModeUpdate() int {
 	}
 
 	if !g.DWR.Active && !g.DWR.IsSpawning {
-		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 > ScreenWidth*0.65 {
+		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 > SCREENWIDTH*0.65 {
 			if n := rand.Int31n(450); n == 10 {
 				g.SpawnDeathWall("right")
 			}
@@ -102,7 +110,7 @@ func (g *Game) GameModeUpdate() int {
 					continue
 				}
 			}
-			if enemy.X+enemy.Width < 0 || enemy.X > ScreenWidth || enemy.Y > ScreenHeight || enemy.Y < -(enemy.Height*2) {
+			if enemy.X+enemy.Width < 0 || enemy.X > SCREENWIDTH || enemy.Y > SCREENHEIGHT || enemy.Y < -(enemy.Height*2) {
 				enemy.Alive = false
 				continue
 			}

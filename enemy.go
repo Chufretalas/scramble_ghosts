@@ -23,7 +23,7 @@ func NewEnemy(X, Y, VX, VY float32) *Enemy {
 
 func NewRandomEnemy(screenWidth, screenHeight, VY float32) *Enemy {
 
-	x := float32(rand.Int31n(ScreenWidth - EnemyW))
+	x := float32(rand.Int31n(SCREENWIDTH - EnemyW))
 
 	var eType EnemyType
 	var vx float32
