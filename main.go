@@ -15,18 +15,19 @@ import (
 )
 
 const (
-	SCREENWIDTH    = 1920
-	SCREENHEIGHT   = 1080
-	bV             = 6
-	BulletBaseSize = 30
-	PlayerBaseSize = 40
-	EnemyW         = 50
-	EnemyH         = 50
-	EnemySpawnTime = time.Millisecond * 50
-	StoppingMult   = 4
-	DWWidth        = 800
-	DWSafeZone     = 80
-	VERSION        = "0.2.2"
+	SCREENWIDTH         = 1920
+	SCREENHEIGHT        = 1080
+	DIFF_INCREASE_DELAY = time.Second * 8
+	bV                  = 6
+	BulletBaseSize      = 30
+	PlayerBaseSize      = 40
+	EnemyW              = 50
+	EnemyH              = 50
+	EnemySpawnTime      = time.Millisecond * 50
+	StoppingMult        = 4
+	DWWidth             = 800
+	DWSafeZone          = 80
+	VERSION             = "0.2.3"
 )
 
 var (

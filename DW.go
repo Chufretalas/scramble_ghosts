@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const dwV = math.Pi / 600
+const dwV float64 = math.Pi / 600
 
 type DW struct {
 	Image      *ebiten.Image
@@ -17,10 +17,10 @@ type DW struct {
 	Side       string
 }
 
-func (dw *DW) Move() {
+func (dw *DW) Move(speedMult float64) {
 	switch dw.Side {
 	case "left":
-		dw.Rad += dwV
+		dw.Rad += dwV * speedMult
 		if dw.Rad > math.Pi {
 			dw.Reset()
 			dw.Active = false
@@ -28,7 +28,7 @@ func (dw *DW) Move() {
 		}
 		dw.X = math.Sin(dw.Rad)*DWWidth - DWWidth
 	case "right":
-		dw.Rad += dwV
+		dw.Rad += dwV * speedMult
 		if dw.Rad > math.Pi {
 			dw.Reset()
 			dw.Active = false

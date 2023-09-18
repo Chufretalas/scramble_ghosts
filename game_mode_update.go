@@ -2,7 +2,6 @@ package main
 
 import (
 	"math/rand"
-	"time"
 
 	"github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -18,7 +17,7 @@ func (g *Game) GameModeUpdate() int {
 	if g.Diff.ShouldIncrease {
 		g.Diff.ShouldIncrease = false
 		g.Diff.Increase()
-		g.TimerSystem.After(time.Second*8, func() {
+		g.TimerSystem.After(DIFF_INCREASE_DELAY, func() {
 			g.Diff.ShouldIncrease = true
 		})
 	}
@@ -64,12 +63,12 @@ func (g *Game) GameModeUpdate() int {
 	// spawn DWs, move them and check for collision with the player
 	if !g.DWL.Active && !g.DWL.IsSpawning {
 		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 < SCREENWIDTH*0.35 {
-			if n := rand.Int31n(450); n == 10 {
+			if n := rand.Int31n(g.Diff.DWSpawnChance); n == 10 {
 				g.SpawnDeathWall("left")
 			}
 		}
 	} else if g.DWL.Active {
-		g.DWL.Move()
+		g.DWL.Move(g.Diff.DWSpeedMult)
 		if g.Player.X < float32(g.DWL.X)+DWWidth-DWSafeZone {
 			if !InvincibleMode {
 				g.Die()
@@ -85,7 +84,7 @@ func (g *Game) GameModeUpdate() int {
 			}
 		}
 	} else if g.DWR.Active {
-		g.DWR.Move()
+		g.DWR.Move(g.Diff.DWSpeedMult)
 		if g.Player.X+PlayerBaseSize*g.Player.SizeMult > float32(g.DWR.X)+DWSafeZone {
 			if !InvincibleMode {
 				g.Die()
@@ -97,7 +96,7 @@ func (g *Game) GameModeUpdate() int {
 	// move enemies and check for collisions
 	for _, enemy := range g.Enemies {
 		if enemy.Alive {
-			enemy.Move()
+			enemy.Move(g.Diff.EnemySpeedMult)
 			if g.DWL.Active {
 				if enemy.X < float32(g.DWL.X)+DWWidth-DWSafeZone {
 					enemy.Alive = false

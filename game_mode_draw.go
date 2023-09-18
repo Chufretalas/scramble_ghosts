@@ -11,7 +11,7 @@ import (
 
 func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	if showDebug {
-		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\nDWL X: %v\nLevel: %v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies), g.DWL.X, g.Diff.Level))
+		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\n%v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies), g.Diff))
 	}
 
 	for _, bullet := range g.Bullets {
@@ -64,5 +64,10 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	}
 
 	// Score 🏆
-	text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 20, 40, color.White)
+	text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 15, 40, color.White)
+
+	levelOp := &ebiten.DrawImageOptions{}
+	levelOp.GeoM.Scale(0.7, 0.7)
+	levelOp.GeoM.Translate(10, SCREENHEIGHT-15)
+	text.DrawWithOptions(screen, fmt.Sprintf("Lvl: %v", g.Diff.Level), MyEpicGamerFont, levelOp)
 }

@@ -66,7 +66,7 @@ type Enemy struct {
 	Score         int
 }
 
-func (e *Enemy) Move() {
+func (e *Enemy) Move(speedMult float32) {
 	maxVX := e.VY * 1.2
 	switch e.Type {
 	case CurveL:
@@ -82,8 +82,8 @@ func (e *Enemy) Move() {
 			e.VX = -maxVX
 		}
 	}
-	e.X += e.VX
-	e.Y += e.VY
+	e.X += e.VX * speedMult
+	e.Y += e.VY * speedMult
 }
 
 func (e *Enemy) GetSprite() *ebiten.Image {
