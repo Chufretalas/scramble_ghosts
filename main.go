@@ -83,6 +83,10 @@ type Game struct {
 
 func (g *Game) Update() error {
 
+	if inpututil.IsKeyJustPressed(ebiten.KeyF) {
+		go ebiten.SetFullscreen(!ebiten.IsFullscreen())
+	}
+
 	switch g.Mode {
 	case "title":
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -139,6 +143,8 @@ func main() {
 
 	LoadImages()
 
+	LoadIcon()
+
 	game := &Game{
 		Enemies:          make([]*Enemy, 0),
 		Bullets:          make([]*Bullet, 0),
@@ -158,6 +164,7 @@ func main() {
 	CanShoot = true
 	bulletsToRemove = make([]int, 0)
 	ebiten.SetFullscreen(true)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("Scramble Ghosts 👻")
 	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)

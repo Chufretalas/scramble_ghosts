@@ -1,14 +1,33 @@
 package main
 
 import (
+	"image"
+	_ "image/png"
 	"log"
 	"os"
 
 	u "github.com/Chufretalas/scramble_ghosts/utils"
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 )
+
+func LoadIcon() {
+	iconFile, err := os.Open("./assets/icon.png")
+	if err != nil {
+		return
+	}
+	defer iconFile.Close()
+
+	icon, _, err := image.Decode(iconFile)
+
+	if err != nil {
+		return
+	}
+
+	ebiten.SetWindowIcon([]image.Image{icon})
+}
 
 func LoadFont() {
 	f, err := os.ReadFile("./assets/PressStart2P-Regular.ttf")
