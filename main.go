@@ -19,7 +19,7 @@ const (
 	SCREENHEIGHT        = 1080
 	DIFF_INCREASE_DELAY = time.Second * 8
 	bV                  = 6
-	BulletBaseSize      = 30
+	PlayerBulletSize    = 26
 	PlayerBaseSize      = 40
 	EnemyW              = 50
 	EnemyH              = 50
@@ -41,7 +41,7 @@ var (
 	LDButtonActiveImage *ebiten.Image
 	GameoverImage       *ebiten.Image
 	GameoverImageHS     *ebiten.Image
-	BulletImage         *ebiten.Image
+	PlayerBulletImage   *ebiten.Image
 	PlayerSheet         *ebiten.Image
 	CurveLSheet         *ebiten.Image
 	CurveRSheet         *ebiten.Image
@@ -59,8 +59,7 @@ var (
 )
 
 type Bullet struct {
-	X, Y     float32
-	SizeMult float32
+	X, Y float32
 }
 
 type Game struct {
@@ -148,7 +147,7 @@ func main() {
 	game := &Game{
 		Enemies:          make([]*Enemy, 0),
 		Bullets:          make([]*Bullet, 0),
-		Player:           Player{X: SCREENWIDTH/2 - 20, Y: SCREENHEIGHT - 40, SizeMult: 1},
+		Player:           Player{X: SCREENWIDTH/2 - 20, Y: SCREENHEIGHT - 40},
 		TimerSystem:      ebitick.NewTimerSystem(),
 		Score:            0,
 		Mode:             "title",

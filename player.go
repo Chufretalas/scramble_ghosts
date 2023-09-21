@@ -12,9 +12,8 @@ var (
 )
 
 type Player struct {
-	X, Y     float32
-	SizeMult float32
-	VX, VY   float32
+	X, Y   float32
+	VX, VY float32
 }
 
 func (p *Player) GetSprite() *ebiten.Image {
@@ -96,15 +95,15 @@ func (p *Player) Move(maxV, acc float32) {
 	// End actually walk
 
 	//Check bounds
-	if p.X+PlayerBaseSize*p.SizeMult > SCREENWIDTH {
-		p.X = SCREENWIDTH - PlayerBaseSize*p.SizeMult
+	if p.X+PlayerBaseSize > SCREENWIDTH {
+		p.X = SCREENWIDTH - PlayerBaseSize
 	}
 	if p.X < 0 {
 		p.X = 0
 	}
 
-	if p.Y+PlayerBaseSize*p.SizeMult > SCREENHEIGHT {
-		p.Y = SCREENHEIGHT - PlayerBaseSize*p.SizeMult
+	if p.Y+PlayerBaseSize > SCREENHEIGHT {
+		p.Y = SCREENHEIGHT - PlayerBaseSize
 	}
 	if p.Y < 0 {
 		p.Y = 0

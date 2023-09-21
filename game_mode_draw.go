@@ -17,7 +17,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	for _, bullet := range g.Bullets {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
-		screen.DrawImage(BulletImage, op)
+		screen.DrawImage(PlayerBulletImage, op)
 	}
 
 	// draw player

@@ -47,7 +47,7 @@ func (g *Game) GameModeUpdate() int {
 
 	// fire bullets
 	if CanShoot && !InvincibleMode {
-		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + PlayerBaseSize*g.Player.SizeMult/2 - BulletBaseSize/2, g.Player.Y, 1})
+		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2, g.Player.Y})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
 	}
@@ -62,7 +62,7 @@ func (g *Game) GameModeUpdate() int {
 
 	// spawn DWs, move them and check for collision with the player
 	if !g.DWL.Active && !g.DWL.IsSpawning {
-		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 < SCREENWIDTH*0.35 {
+		if g.Player.X+PlayerBaseSize/2 < SCREENWIDTH*0.35 {
 			if n := rand.Int31n(g.Diff.DWSpawnChance); n == 10 {
 				g.SpawnDeathWall("left")
 			}
@@ -78,14 +78,14 @@ func (g *Game) GameModeUpdate() int {
 	}
 
 	if !g.DWR.Active && !g.DWR.IsSpawning {
-		if g.Player.X+PlayerBaseSize*g.Player.SizeMult/2 > SCREENWIDTH*0.65 {
+		if g.Player.X+PlayerBaseSize/2 > SCREENWIDTH*0.65 {
 			if n := rand.Int31n(450); n == 10 {
 				g.SpawnDeathWall("right")
 			}
 		}
 	} else if g.DWR.Active {
 		g.DWR.Move(g.Diff.DWSpeedMult)
-		if g.Player.X+PlayerBaseSize*g.Player.SizeMult > float32(g.DWR.X)+DWSafeZone {
+		if g.Player.X+PlayerBaseSize > float32(g.DWR.X)+DWSafeZone {
 			if !InvincibleMode {
 				g.Die()
 				return 0
@@ -114,7 +114,7 @@ func (g *Game) GameModeUpdate() int {
 				continue
 			}
 			for bullet_index, bullet := range g.Bullets {
-				if utils.IsColliding(bullet.X, bullet.Y, BulletBaseSize*bullet.SizeMult, BulletBaseSize*bullet.SizeMult, enemy.X, enemy.Y, enemy.Width, enemy.Height) {
+				if utils.IsColliding(bullet.X, bullet.Y, PlayerBulletSize, PlayerBulletSize, enemy.X, enemy.Y, enemy.Width, enemy.Height) {
 					// enemy.hit = true
 					enemy.Alive = false
 					bulletsToRemove = append(bulletsToRemove, bullet_index)
@@ -122,7 +122,7 @@ func (g *Game) GameModeUpdate() int {
 					break
 				}
 			}
-			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X+6, g.Player.Y+6, PlayerBaseSize*g.Player.SizeMult-12, PlayerBaseSize*g.Player.SizeMult-12) && enemy.Alive {
+			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X+6, g.Player.Y+6, PlayerBaseSize-12, PlayerBaseSize-12) && enemy.Alive {
 				enemy.Hit = true
 				if !InvincibleMode {
 					g.Die()
