@@ -11,10 +11,10 @@ import (
 
 func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	if showDebug {
-		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\n%v", ebiten.ActualFPS(), len(g.Bullets), len(g.Enemies), g.Diff))
+		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\n%v", ebiten.ActualFPS(), len(g.PBullets), len(g.Enemies), g.Diff))
 	}
 
-	for _, bullet := range g.Bullets {
+	for _, bullet := range g.PBullets {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
 		screen.DrawImage(PlayerBulletImage, op)

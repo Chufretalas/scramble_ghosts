@@ -17,11 +17,11 @@ type Player struct {
 }
 
 func (p *Player) GetSprite() *ebiten.Image {
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+	if ebiten.IsKeyPressed(ebiten.KeyA) {
 		return PlayerSheet.SubImage(image.Rect(40, 0, 80, 40)).(*ebiten.Image)
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+	if ebiten.IsKeyPressed(ebiten.KeyD) {
 		return PlayerSheet.SubImage(image.Rect(80, 0, 120, 40)).(*ebiten.Image)
 	}
 
@@ -31,7 +31,7 @@ func (p *Player) GetSprite() *ebiten.Image {
 func (p *Player) Move(maxV, acc float32) {
 	walkedx = false
 	walkedy = false
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+	if ebiten.IsKeyPressed(ebiten.KeyD) {
 		if p.VX < maxV {
 			if p.VX < 0 && p.VX < -acc*StoppingMult {
 				p.VX += acc * StoppingMult
@@ -43,7 +43,7 @@ func (p *Player) Move(maxV, acc float32) {
 		}
 		walkedx = !walkedx
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+	if ebiten.IsKeyPressed(ebiten.KeyA) {
 		if p.VX > -maxV {
 			if p.VX > 0 && p.VX > acc*StoppingMult {
 				p.VX -= acc * StoppingMult
@@ -55,7 +55,7 @@ func (p *Player) Move(maxV, acc float32) {
 		}
 		walkedx = !walkedx
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyDown) {
+	if ebiten.IsKeyPressed(ebiten.KeyS) {
 		if p.VY < maxV {
 			if p.VY < 0 && p.VY < -acc*StoppingMult {
 				p.VY += acc * StoppingMult
@@ -67,7 +67,7 @@ func (p *Player) Move(maxV, acc float32) {
 		}
 		walkedy = !walkedy
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyUp) {
+	if ebiten.IsKeyPressed(ebiten.KeyW) {
 		if p.VY > -maxV {
 			if p.VY > 0 && p.VY > acc*StoppingMult {
 				p.VY += acc * StoppingMult

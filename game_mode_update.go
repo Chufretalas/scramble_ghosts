@@ -47,15 +47,23 @@ func (g *Game) GameModeUpdate() int {
 
 	// fire bullets
 	if CanShoot && !InvincibleMode {
-		g.Bullets = append(g.Bullets, &Bullet{g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2, g.Player.Y})
+		var angle float32
+		if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+			angle = 120
+		} else if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+			angle = 60
+		} else {
+			angle = 90
+		}
+		g.PBullets = append(g.PBullets, &PBullet{X: g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2, Y: g.Player.Y, Rad: utils.Deg2Rad(angle), Speed: 6})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
 	}
 
 	// move bullets
-	for i, bullet := range g.Bullets {
-		bullet.Y -= bV
-		if bullet.Y+10 < 0 {
+	for i, bullet := range g.PBullets {
+		bullet.Move()
+		if bullet.Y+26 < 0 || bullet.Y > SCREENHEIGHT || bullet.X+26 < 0 || bullet.X > SCREENWIDTH {
 			bulletsToRemove = append(bulletsToRemove, i)
 		}
 	}
@@ -113,7 +121,7 @@ func (g *Game) GameModeUpdate() int {
 				enemy.Alive = false
 				continue
 			}
-			for bullet_index, bullet := range g.Bullets {
+			for bullet_index, bullet := range g.PBullets {
 				if utils.IsColliding(bullet.X, bullet.Y, PlayerBulletSize, PlayerBulletSize, enemy.X, enemy.Y, enemy.Width, enemy.Height) {
 					// enemy.hit = true
 					enemy.Alive = false
@@ -147,13 +155,13 @@ func (g *Game) GameModeUpdate() int {
 	// TODO: maybe use the same strategy to remove the bullets as is used for the enemies
 	if len(bulletsToRemove) != 0 {
 		bulletsToRemove = utils.RemoveDups(bulletsToRemove)
-		newBullets := make([]*Bullet, 0, len(g.Bullets)-len(bulletsToRemove))
-		for i, bullet := range g.Bullets {
+		newBullets := make([]*PBullet, 0, len(g.PBullets)-len(bulletsToRemove))
+		for i, bullet := range g.PBullets {
 			if !utils.InSlice(bulletsToRemove, i) {
 				newBullets = append(newBullets, bullet)
 			}
 		}
-		g.Bullets = newBullets
+		g.PBullets = newBullets
 		bulletsToRemove = make([]int, 0)
 	}
 	return 0

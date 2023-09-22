@@ -18,7 +18,6 @@ const (
 	SCREENWIDTH         = 1920
 	SCREENHEIGHT        = 1080
 	DIFF_INCREASE_DELAY = time.Second * 8
-	bV                  = 6
 	PlayerBulletSize    = 26
 	PlayerBaseSize      = 40
 	EnemyW              = 50
@@ -58,13 +57,9 @@ var (
 	canUseClipboard     bool
 )
 
-type Bullet struct {
-	X, Y float32
-}
-
 type Game struct {
 	Enemies          []*Enemy
-	Bullets          []*Bullet
+	PBullets         []*PBullet
 	Player           Player
 	TimerSystem      *ebitick.TimerSystem
 	Score            int
@@ -146,7 +141,7 @@ func main() {
 
 	game := &Game{
 		Enemies:          make([]*Enemy, 0),
-		Bullets:          make([]*Bullet, 0),
+		PBullets:         make([]*PBullet, 0),
 		Player:           Player{X: SCREENWIDTH/2 - 20, Y: SCREENHEIGHT - 40},
 		TimerSystem:      ebitick.NewTimerSystem(),
 		Score:            0,
