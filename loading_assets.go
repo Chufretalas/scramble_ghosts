@@ -84,6 +84,14 @@ func LoadImages() {
 
 	imageError = nil
 
+	EnemyBulletImage, _, imageError = ebitenutil.NewImageFromFile("./assets/enemy_bullet.png")
+
+	if imageError != nil {
+		u.ErrorAndDie("Enemy bullet image did not load " + imageError.Error())
+	}
+
+	imageError = nil
+
 	PlayerSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/player_spritesheet.png")
 
 	if imageError != nil {

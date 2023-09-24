@@ -41,6 +41,7 @@ var (
 	GameoverImage       *ebiten.Image
 	GameoverImageHS     *ebiten.Image
 	PlayerBulletImage   *ebiten.Image
+	EnemyBulletImage    *ebiten.Image
 	PlayerSheet         *ebiten.Image
 	CurveLSheet         *ebiten.Image
 	CurveRSheet         *ebiten.Image
@@ -60,6 +61,7 @@ var (
 type Game struct {
 	Enemies          []*Enemy
 	PBullets         []*PBullet
+	EHBullets        []*EHommingBullet
 	Player           Player
 	TimerSystem      *ebitick.TimerSystem
 	Score            int
@@ -142,6 +144,7 @@ func main() {
 	game := &Game{
 		Enemies:          make([]*Enemy, 0),
 		PBullets:         make([]*PBullet, 0),
+		EHBullets:        make([]*EHommingBullet, 0),
 		Player:           Player{X: SCREENWIDTH/2 - 20, Y: SCREENHEIGHT - 40},
 		TimerSystem:      ebitick.NewTimerSystem(),
 		Score:            0,

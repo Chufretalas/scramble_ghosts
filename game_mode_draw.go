@@ -63,6 +63,12 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 		screen.DrawImage(g.DWR.Image, dwrOp)
 	}
 
+	for _, bullet := range g.EHBullets {
+		bulletOp := &ebiten.DrawImageOptions{}
+		bulletOp.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
+		screen.DrawImage(EnemyBulletImage, bulletOp)
+	}
+
 	// Score 🏆
 	text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 15, 40, color.White)
 
