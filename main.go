@@ -50,7 +50,7 @@ var (
 	DWRImage            *ebiten.Image
 	DWWLImage           *ebiten.Image // death wall warning
 	DWWRImage           *ebiten.Image // death wall warning
-	ArcshotImage        *ebiten.Image
+	ArcshotSheet        *ebiten.Image
 	InvincibleMode      bool
 	UInfo               UserInfo
 	LDConnection        string // anything that is not "ok" should not be trusted

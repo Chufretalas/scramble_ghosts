@@ -14,7 +14,7 @@ func (g *Game) GameModeUpdate() int {
 	g.TimerSystem.Update()
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: SCREENWIDTH / 2, Y: SCREENHEIGHT / 2, Vel: utils.Vec{X: 0, Y: 10}, Strength: 0.4})
+		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: SCREENWIDTH / 2, Y: SCREENHEIGHT / 2, Vel: utils.Vec{X: 0, Y: 10}, Strength: 0.8})
 	}
 
 	for _, bullet := range g.EHBullets {
@@ -25,7 +25,7 @@ func (g *Game) GameModeUpdate() int {
 	g.Arcshot.Move()
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		g.Arcshot.X = 0
+		g.Arcshot.X = -200
 		g.Arcshot.rad = 0
 	}
 

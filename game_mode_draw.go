@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -12,7 +13,7 @@ import (
 func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	arcshotOP := &ebiten.DrawImageOptions{}
 	arcshotOP.GeoM.Translate(g.Arcshot.X, g.Arcshot.Y+100)
-	screen.DrawImage(ArcshotImage, arcshotOP)
+	screen.DrawImage(ArcshotSheet.SubImage(image.Rect(0, 0, 150, 200)).(*ebiten.Image), arcshotOP)
 
 	if showDebug {
 		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\n%v", ebiten.ActualFPS(), len(g.PBullets), len(g.Enemies), g.Diff))

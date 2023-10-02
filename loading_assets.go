@@ -172,7 +172,7 @@ func LoadImages() {
 
 	imageError = nil
 
-	ArcshotImage, _, imageError = ebitenutil.NewImageFromFile("./assets/arcshot.png")
+	ArcshotSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/arcshot_v2_sheet.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("arcshot image image did not load: " + imageError.Error())
