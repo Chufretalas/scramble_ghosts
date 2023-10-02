@@ -7,6 +7,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+const curveAcc = 0.05
+
 type EnemyType int64
 
 const (
@@ -15,7 +17,15 @@ const (
 	CurveR
 )
 
-const curveAcc = 0.05
+type Enemy struct {
+	X, Y          float32
+	VX, VY        float32
+	Width, Height float32
+	Hit           bool
+	Alive         bool
+	Type          EnemyType
+	Score         int
+}
 
 func NewEnemy(X, Y, VX, VY float32) *Enemy {
 	return &Enemy{X: X, Y: Y, VX: VX, VY: VY, Width: EnemyW, Height: EnemyH, Hit: false, Alive: true, Type: Linear, Score: 20}
@@ -54,16 +64,6 @@ func NewRandomEnemy(screenWidth, screenHeight, VY float32) *Enemy {
 		Type:   eType,
 		Score:  score,
 	}
-}
-
-type Enemy struct {
-	X, Y          float32
-	VX, VY        float32
-	Width, Height float32
-	Hit           bool
-	Alive         bool
-	Type          EnemyType
-	Score         int
 }
 
 func (e *Enemy) Move(speedMult float32) {

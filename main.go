@@ -50,6 +50,7 @@ var (
 	DWRImage            *ebiten.Image
 	DWWLImage           *ebiten.Image // death wall warning
 	DWWRImage           *ebiten.Image // death wall warning
+	ArcshotImage        *ebiten.Image
 	InvincibleMode      bool
 	UInfo               UserInfo
 	LDConnection        string // anything that is not "ok" should not be trusted
@@ -62,6 +63,7 @@ type Game struct {
 	Enemies          []*Enemy
 	PBullets         []*PBullet
 	EHBullets        []*EHommingBullet
+	Arcshot          Arcshot
 	Player           Player
 	TimerSystem      *ebitick.TimerSystem
 	Score            int
@@ -146,6 +148,7 @@ func main() {
 		PBullets:         make([]*PBullet, 0),
 		EHBullets:        make([]*EHommingBullet, 0),
 		Player:           Player{X: SCREENWIDTH/2 - 20, Y: SCREENHEIGHT - 40},
+		Arcshot:          Arcshot{X: 0, Y: 0},
 		TimerSystem:      ebitick.NewTimerSystem(),
 		Score:            0,
 		Mode:             "title",

@@ -10,6 +10,10 @@ import (
 )
 
 func (g *Game) GameModeDraw(screen *ebiten.Image) {
+	arcshotOP := &ebiten.DrawImageOptions{}
+	arcshotOP.GeoM.Translate(g.Arcshot.X, g.Arcshot.Y+100)
+	screen.DrawImage(ArcshotImage, arcshotOP)
+
 	if showDebug {
 		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\n%v", ebiten.ActualFPS(), len(g.PBullets), len(g.Enemies), g.Diff))
 	}

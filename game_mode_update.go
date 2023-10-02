@@ -14,11 +14,19 @@ func (g *Game) GameModeUpdate() int {
 	g.TimerSystem.Update()
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: SCREENWIDTH / 2, Y: SCREENHEIGHT / 2, Vel: utils.Vec{X: 0, Y: 10}, Strength: 0.6})
+		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: SCREENWIDTH / 2, Y: SCREENHEIGHT / 2, Vel: utils.Vec{X: 0, Y: 10}, Strength: 0.4})
 	}
 
 	for _, bullet := range g.EHBullets {
 		bullet.Move(g.Player.X+PlayerBaseSize/2, g.Player.Y+PlayerBaseSize/2)
+	}
+
+	//arcshot stuff
+	g.Arcshot.Move()
+
+	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		g.Arcshot.X = 0
+		g.Arcshot.rad = 0
 	}
 
 	// increase difficulty
