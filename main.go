@@ -41,7 +41,8 @@ var (
 	GameoverImage       *ebiten.Image
 	GameoverImageHS     *ebiten.Image
 	PlayerBulletImage   *ebiten.Image
-	EnemyBulletImage    *ebiten.Image
+	EnemyBullet30Image  *ebiten.Image
+	EnemyBullet50Image  *ebiten.Image
 	PlayerSheet         *ebiten.Image
 	CurveLSheet         *ebiten.Image
 	CurveRSheet         *ebiten.Image
@@ -148,7 +149,7 @@ func main() {
 		PBullets:         make([]*PBullet, 0),
 		EHBullets:        make([]*EHommingBullet, 0),
 		Player:           Player{X: SCREENWIDTH/2 - 20, Y: SCREENHEIGHT - 40},
-		Arcshot:          Arcshot{X: 0, Y: 0},
+		Arcshot:          Arcshot{X: 0, Y: 0, State: "idle"},
 		TimerSystem:      ebitick.NewTimerSystem(),
 		Score:            0,
 		Mode:             "title",

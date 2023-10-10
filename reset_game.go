@@ -13,6 +13,7 @@ func (g *Game) ResetGame() {
 	g.ShowDWWL = false
 	g.ShowDWWR = false
 	g.ShouldSpawnEnemy = true
+	g.Arcshot.Reset()
 	g.DWL.Reset()
 	g.DWR.Reset()
 	g.Diff.Reset()

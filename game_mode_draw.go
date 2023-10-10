@@ -11,9 +11,6 @@ import (
 )
 
 func (g *Game) GameModeDraw(screen *ebiten.Image) {
-	arcshotOP := &ebiten.DrawImageOptions{}
-	arcshotOP.GeoM.Translate(g.Arcshot.X, g.Arcshot.Y+100)
-	screen.DrawImage(ArcshotSheet.SubImage(image.Rect(0, 0, 150, 200)).(*ebiten.Image), arcshotOP)
 
 	if showDebug {
 		ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %v\nBullets: %v\nEnemies: %v\n%v", ebiten.ActualFPS(), len(g.PBullets), len(g.Enemies), g.Diff))
@@ -44,6 +41,27 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 		enemyOp.GeoM.Reset()
 	}
 
+	for _, bullet := range g.EHBullets {
+		bulletOp := &ebiten.DrawImageOptions{}
+		bulletOp.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
+		if bullet.Size == 30 {
+			screen.DrawImage(EnemyBullet30Image, bulletOp)
+		} else {
+			screen.DrawImage(EnemyBullet50Image, bulletOp)
+		}
+	}
+
+	// Drawing arcshot
+	arcshotOP := &ebiten.DrawImageOptions{}
+	arcshotOP.GeoM.Translate(g.Arcshot.X, g.Arcshot.Y+100)
+	switch g.Arcshot.State {
+	case "idle":
+		screen.DrawImage(ArcshotSheet.SubImage(image.Rect(0, 0, 150, 200)).(*ebiten.Image), arcshotOP)
+	case "firing":
+		screen.DrawImage(ArcshotSheet.SubImage(image.Rect(150, 0, 300, 200)).(*ebiten.Image), arcshotOP)
+	}
+	// End Arcshot
+
 	// Death Walls warnings
 	if g.ShowDWWL {
 		screen.DrawImage(DWWLImage, nil)
@@ -66,12 +84,6 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 		dwrOp := &ebiten.DrawImageOptions{}
 		dwrOp.GeoM.Translate(g.DWR.X, 0)
 		screen.DrawImage(g.DWR.Image, dwrOp)
-	}
-
-	for _, bullet := range g.EHBullets {
-		bulletOp := &ebiten.DrawImageOptions{}
-		bulletOp.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
-		screen.DrawImage(EnemyBulletImage, bulletOp)
 	}
 
 	// Score 🏆

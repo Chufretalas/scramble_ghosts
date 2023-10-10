@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"time"
 
 	"github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,16 +14,19 @@ func (g *Game) GameModeUpdate() int {
 
 	g.TimerSystem.Update()
 
-	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: SCREENWIDTH / 2, Y: SCREENHEIGHT / 2, Vel: utils.Vec{X: 0, Y: 10}, Strength: 0.8})
-	}
-
 	for _, bullet := range g.EHBullets {
 		bullet.Move(g.Player.X+PlayerBaseSize/2, g.Player.Y+PlayerBaseSize/2)
 	}
 
 	//arcshot stuff
 	g.Arcshot.Move()
+
+	if g.Arcshot.X == 500 {
+		// X: Archsot.X + Arcshot.Width/2 - bullet.Size = Archsot.X + 75 - 50
+		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: float32(g.Arcshot.X) + 50, Y: float32(g.Arcshot.Y) + 220, Vel: utils.Vec{X: 0, Y: 10}, Strength: 0.5, Size: 50})
+		g.Arcshot.State = "firing"
+		g.TimerSystem.After(time.Second, func() { g.Arcshot.State = "idle" })
+	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		g.Arcshot.X = -200
