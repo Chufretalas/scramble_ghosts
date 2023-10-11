@@ -149,7 +149,7 @@ func main() {
 		PBullets:         make([]*PBullet, 0),
 		EHBullets:        make([]*EHommingBullet, 0),
 		Player:           Player{X: SCREENWIDTH/2 - 20, Y: SCREENHEIGHT - 40},
-		Arcshot:          Arcshot{X: 0, Y: 0, State: "idle"},
+		Arcshot:          Arcshot{X: -150, Y: 0, ShotsFired: 0, State: "idle", Active: false},
 		TimerSystem:      ebitick.NewTimerSystem(),
 		Score:            0,
 		Mode:             "title",

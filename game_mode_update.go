@@ -14,26 +14,28 @@ func (g *Game) GameModeUpdate() int {
 
 	g.TimerSystem.Update()
 
-	for _, bullet := range g.EHBullets {
-		bullet.Move(float64(g.Player.X+PlayerBaseSize/2), float64(g.Player.Y+PlayerBaseSize/2))
-	}
-
 	//arcshot stuff
-	g.Arcshot.Move()
+	if g.Arcshot.Active {
+		g.Arcshot.Move()
+		if g.Arcshot.ShotsFired < float64(g.Diff.ArcshotShots) && rand.Int31n(200) == 10 {
+			g.Arcshot.ShotsFired++
 
-	if g.Arcshot.X == 500 {
-		// X: Archsot.X + Arcshot.Width/2 - bullet.Size = Archsot.X + 75 - 50
-		origin := utils.Vec{X: g.Arcshot.X + 50, Y: g.Arcshot.Y + 220}
-		vel := utils.Vec{X: float64(g.Player.X+PlayerBaseSize/2) - origin.X, Y: float64(g.Player.Y+PlayerBaseSize/2) - origin.Y}
-		vel.ToUnit().EscMult(10)
-		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: origin.X, Y: origin.Y, Vel: vel, Strength: 0.5, Size: 50})
-		g.Arcshot.State = "firing"
-		g.TimerSystem.After(time.Second, func() { g.Arcshot.State = "idle" })
+			// X: Archsot.X + Arcshot.Width/2 - bullet.Size = Archsot.X + 75 - 50
+			origin := utils.Vec{X: g.Arcshot.X + 50, Y: g.Arcshot.Y + 220}
+			vel := utils.Vec{X: g.Player.X + PlayerBaseSize/2 - origin.X, Y: g.Player.Y + PlayerBaseSize/2 - origin.Y}
+			vel.ToUnit().EscMult(10)
+			g.EHBullets = append(g.EHBullets, &EHommingBullet{X: origin.X, Y: origin.Y, Vel: vel, Strength: 0.5, Size: 50})
+			g.Arcshot.State = "firing"
+			g.TimerSystem.After(time.Second, func() { g.Arcshot.State = "idle" })
+		}
+	} else {
+		g.TimerSystem.After(g.Diff.ArcshotDelay, func() {
+			g.Arcshot.Active = true
+		})
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		g.Arcshot.X = -200
-		g.Arcshot.rad = 0
+		g.Arcshot.Reset()
 	}
 
 	// increase difficulty
@@ -78,18 +80,25 @@ func (g *Game) GameModeUpdate() int {
 		} else {
 			angle = 90
 		}
-		g.PBullets = append(g.PBullets, &PBullet{X: float64(g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2), Y: float64(g.Player.Y), Rad: utils.Deg2Rad(angle), Speed: 6})
+		g.PBullets = append(g.PBullets, &PBullet{X: g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2, Y: g.Player.Y, Rad: utils.Deg2Rad(angle), Speed: 6})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
 	}
 
 	// move bullets
+	for _, bullet := range g.EHBullets {
+		bullet.Move(g.Player.X+PlayerBaseSize/2, g.Player.Y+PlayerBaseSize/2)
+		//TODO: change the bullets to remove to a dead system, similar to the enemies
+		//TODO: check for collision with the player
+	}
+
 	for i, bullet := range g.PBullets {
 		bullet.Move()
 		if bullet.Y+26 < 0 || bullet.Y > SCREENHEIGHT || bullet.X+26 < 0 || bullet.X > SCREENWIDTH {
 			bulletsToRemove = append(bulletsToRemove, i)
 		}
 	}
+	// end move bullets
 
 	// spawn DWs, move them and check for collision with the player
 	if !g.DWL.Active && !g.DWL.IsSpawning {
@@ -100,7 +109,7 @@ func (g *Game) GameModeUpdate() int {
 		}
 	} else if g.DWL.Active {
 		g.DWL.Move(g.Diff.DWSpeedMult)
-		if float64(g.Player.X) < g.DWL.X+DWWidth-DWSafeZone {
+		if g.Player.X < g.DWL.X+DWWidth-DWSafeZone {
 			if !InvincibleMode {
 				g.Die()
 				return 0
@@ -153,7 +162,7 @@ func (g *Game) GameModeUpdate() int {
 					break
 				}
 			}
-			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, float64(g.Player.X+6), float64(g.Player.Y+6), PlayerBaseSize-12, PlayerBaseSize-12) && enemy.Alive {
+			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X+6, g.Player.Y+6, PlayerBaseSize-12, PlayerBaseSize-12) && enemy.Alive {
 				enemy.Hit = true
 				if !InvincibleMode {
 					g.Die()

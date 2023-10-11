@@ -6,7 +6,7 @@ import (
 )
 
 func NewDefaultDifficulty() Difficulty {
-	return Difficulty{Level: 0, EnemiesPerSpawn: 1, EnemySpawnDelay: time.Millisecond * 120, EnemySpeedMult: 1, DWSpawnChance: 550, DWSpeedMult: 1, ShouldIncrease: true}
+	return Difficulty{Level: 0, EnemiesPerSpawn: 1, EnemySpawnDelay: time.Millisecond * 120, EnemySpeedMult: 1, DWSpawnChance: 550, DWSpeedMult: 1, ShouldIncrease: true, ArcshotDelay: time.Second * 7, ArcshotShots: 4}
 }
 
 type Difficulty struct {
@@ -17,6 +17,8 @@ type Difficulty struct {
 	DWSpawnChance   int32 // the higher the number, the rarer the spawn
 	DWSpeedMult     float64
 	ShouldIncrease  bool
+	ArcshotDelay    time.Duration // how long between spawns //TODO: increase this
+	ArcshotShots    int           //how many times arcshot shoots in one pass through the screen //TODO: increase this, maybe
 }
 
 func (d *Difficulty) Reset() {
@@ -27,6 +29,8 @@ func (d *Difficulty) Reset() {
 	d.DWSpawnChance = 550
 	d.DWSpeedMult = 1
 	d.ShouldIncrease = true
+	d.ArcshotDelay = time.Second * 7
+	d.ArcshotShots = 4
 }
 
 func (d *Difficulty) Increase() {

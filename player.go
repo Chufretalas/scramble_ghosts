@@ -12,8 +12,8 @@ var (
 )
 
 type Player struct {
-	X, Y   float32
-	VX, VY float32
+	X, Y   float64
+	VX, VY float64
 }
 
 func (p *Player) GetSprite() *ebiten.Image {
@@ -28,7 +28,7 @@ func (p *Player) GetSprite() *ebiten.Image {
 	return PlayerSheet.SubImage(image.Rect(0, 0, 40, 40)).(*ebiten.Image)
 }
 
-func (p *Player) Move(maxV, acc float32) {
+func (p *Player) Move(maxV, acc float64) {
 	walkedx = false
 	walkedy = false
 	if ebiten.IsKeyPressed(ebiten.KeyD) {
