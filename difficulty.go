@@ -13,7 +13,7 @@ type Difficulty struct {
 	Level           int // this is what keeps track of the current difficulty level
 	EnemiesPerSpawn int
 	EnemySpawnDelay time.Duration
-	EnemySpeedMult  float32
+	EnemySpeedMult  float64
 	DWSpawnChance   int32 // the higher the number, the rarer the spawn
 	DWSpeedMult     float64
 	ShouldIncrease  bool

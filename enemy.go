@@ -18,28 +18,28 @@ const (
 )
 
 type Enemy struct {
-	X, Y          float32
-	VX, VY        float32
-	Width, Height float32
+	X, Y          float64
+	VX, VY        float64
+	Width, Height float64
 	Hit           bool
 	Alive         bool
 	Type          EnemyType
 	Score         int
 }
 
-func NewEnemy(X, Y, VX, VY float32) *Enemy {
+func NewEnemy(X, Y, VX, VY float64) *Enemy {
 	return &Enemy{X: X, Y: Y, VX: VX, VY: VY, Width: EnemyW, Height: EnemyH, Hit: false, Alive: true, Type: Linear, Score: 20}
 }
 
-func NewRandomEnemy(screenWidth, screenHeight, VY float32) *Enemy {
+func NewRandomEnemy(VY float64) *Enemy {
 
-	x := float32(rand.Int31n(SCREENWIDTH - EnemyW))
+	x := float64(rand.Int31n(SCREENWIDTH - EnemyW))
 
 	var eType EnemyType
-	var vx float32
+	var vx float64
 	var score int
 	if v := rand.Int63n(6); v >= 4 {
-		if x+EnemyH/2 < screenWidth/2 {
+		if x+EnemyH/2 < SCREENWIDTH/2 {
 			eType = CurveL
 		} else {
 			eType = CurveR
@@ -48,7 +48,7 @@ func NewRandomEnemy(screenWidth, screenHeight, VY float32) *Enemy {
 		score = 50
 	} else {
 		eType = Linear
-		vx = rand.Float32() - 0.5
+		vx = rand.Float64() - 0.5
 		score = 20
 	}
 
@@ -66,7 +66,7 @@ func NewRandomEnemy(screenWidth, screenHeight, VY float32) *Enemy {
 	}
 }
 
-func (e *Enemy) Move(speedMult float32) {
+func (e *Enemy) Move(speedMult float64) {
 	maxVX := e.VY * 1.2
 	switch e.Type {
 	case CurveL:

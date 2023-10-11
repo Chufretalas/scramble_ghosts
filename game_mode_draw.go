@@ -18,7 +18,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 
 	for _, bullet := range g.PBullets {
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
+		op.GeoM.Translate(bullet.X, bullet.Y)
 		screen.DrawImage(PlayerBulletImage, op)
 	}
 
@@ -35,7 +35,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 			enemyOp.ColorScale.SetB(255)
 			enemyOp.ColorScale.SetG(100)
 		}
-		enemyOp.GeoM.Translate(float64(enemy.X), float64(enemy.Y))
+		enemyOp.GeoM.Translate(enemy.X, enemy.Y)
 		screen.DrawImage(enemy.GetSprite(), enemyOp)
 		enemyOp.ColorScale.Reset()
 		enemyOp.GeoM.Reset()
@@ -43,7 +43,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 
 	for _, bullet := range g.EHBullets {
 		bulletOp := &ebiten.DrawImageOptions{}
-		bulletOp.GeoM.Translate(float64(bullet.X), float64(bullet.Y))
+		bulletOp.GeoM.Translate(bullet.X, bullet.Y)
 		if bullet.Size == 30 {
 			screen.DrawImage(EnemyBullet30Image, bulletOp)
 		} else {

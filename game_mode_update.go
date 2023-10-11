@@ -15,7 +15,7 @@ func (g *Game) GameModeUpdate() int {
 	g.TimerSystem.Update()
 
 	for _, bullet := range g.EHBullets {
-		bullet.Move(g.Player.X+PlayerBaseSize/2, g.Player.Y+PlayerBaseSize/2)
+		bullet.Move(float64(g.Player.X+PlayerBaseSize/2), float64(g.Player.Y+PlayerBaseSize/2))
 	}
 
 	//arcshot stuff
@@ -23,7 +23,10 @@ func (g *Game) GameModeUpdate() int {
 
 	if g.Arcshot.X == 500 {
 		// X: Archsot.X + Arcshot.Width/2 - bullet.Size = Archsot.X + 75 - 50
-		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: float32(g.Arcshot.X) + 50, Y: float32(g.Arcshot.Y) + 220, Vel: utils.Vec{X: 0, Y: 10}, Strength: 0.5, Size: 50})
+		origin := utils.Vec{X: g.Arcshot.X + 50, Y: g.Arcshot.Y + 220}
+		vel := utils.Vec{X: float64(g.Player.X+PlayerBaseSize/2) - origin.X, Y: float64(g.Player.Y+PlayerBaseSize/2) - origin.Y}
+		vel.ToUnit().EscMult(10)
+		g.EHBullets = append(g.EHBullets, &EHommingBullet{X: origin.X, Y: origin.Y, Vel: vel, Strength: 0.5, Size: 50})
 		g.Arcshot.State = "firing"
 		g.TimerSystem.After(time.Second, func() { g.Arcshot.State = "idle" })
 	}
@@ -46,7 +49,7 @@ func (g *Game) GameModeUpdate() int {
 	if g.ShouldSpawnEnemy {
 		g.ShouldSpawnEnemy = false
 		for i := 0; i < g.Diff.EnemiesPerSpawn; i++ {
-			g.Enemies = append(g.Enemies, NewRandomEnemy(SCREENWIDTH, SCREENHEIGHT, 6))
+			g.Enemies = append(g.Enemies, NewRandomEnemy(6))
 		}
 		g.TimerSystem.After(g.Diff.EnemySpawnDelay, func() {
 			g.ShouldSpawnEnemy = true
@@ -60,7 +63,7 @@ func (g *Game) GameModeUpdate() int {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		showDebug = !showDebug
-		NewRandomEnemy(SCREENWIDTH, SCREENHEIGHT, 10)
+		NewRandomEnemy(10)
 	}
 
 	g.Player.Move(9, 0.8)
@@ -75,7 +78,7 @@ func (g *Game) GameModeUpdate() int {
 		} else {
 			angle = 90
 		}
-		g.PBullets = append(g.PBullets, &PBullet{X: g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2, Y: g.Player.Y, Rad: utils.Deg2Rad(angle), Speed: 6})
+		g.PBullets = append(g.PBullets, &PBullet{X: float64(g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2), Y: float64(g.Player.Y), Rad: utils.Deg2Rad(angle), Speed: 6})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
 	}
@@ -97,7 +100,7 @@ func (g *Game) GameModeUpdate() int {
 		}
 	} else if g.DWL.Active {
 		g.DWL.Move(g.Diff.DWSpeedMult)
-		if g.Player.X < float32(g.DWL.X)+DWWidth-DWSafeZone {
+		if float64(g.Player.X) < g.DWL.X+DWWidth-DWSafeZone {
 			if !InvincibleMode {
 				g.Die()
 				return 0
@@ -113,7 +116,7 @@ func (g *Game) GameModeUpdate() int {
 		}
 	} else if g.DWR.Active {
 		g.DWR.Move(g.Diff.DWSpeedMult)
-		if g.Player.X+PlayerBaseSize > float32(g.DWR.X)+DWSafeZone {
+		if float64(g.Player.X)+PlayerBaseSize > g.DWR.X+DWSafeZone {
 			if !InvincibleMode {
 				g.Die()
 				return 0
@@ -126,13 +129,13 @@ func (g *Game) GameModeUpdate() int {
 		if enemy.Alive {
 			enemy.Move(g.Diff.EnemySpeedMult)
 			if g.DWL.Active {
-				if enemy.X < float32(g.DWL.X)+DWWidth-DWSafeZone {
+				if enemy.X < g.DWL.X+DWWidth-DWSafeZone {
 					enemy.Alive = false
 					continue
 				}
 			}
 			if g.DWR.Active {
-				if enemy.X+EnemyW > float32(g.DWR.X)+DWSafeZone {
+				if enemy.X+EnemyW > g.DWR.X+DWSafeZone {
 					enemy.Alive = false
 					continue
 				}
@@ -150,7 +153,7 @@ func (g *Game) GameModeUpdate() int {
 					break
 				}
 			}
-			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, g.Player.X+6, g.Player.Y+6, PlayerBaseSize-12, PlayerBaseSize-12) && enemy.Alive {
+			if utils.IsColliding(enemy.X, enemy.Y, enemy.Width, enemy.Height, float64(g.Player.X+6), float64(g.Player.Y+6), PlayerBaseSize-12, PlayerBaseSize-12) && enemy.Alive {
 				enemy.Hit = true
 				if !InvincibleMode {
 					g.Die()
