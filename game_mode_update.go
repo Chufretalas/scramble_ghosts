@@ -35,10 +35,6 @@ func (g *Game) GameModeUpdate() int {
 		})
 	}
 
-	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		g.Arcshot.Reset()
-	}
-
 	// increase difficulty
 	if g.Diff.ShouldIncrease {
 		g.Diff.ShouldIncrease = false
