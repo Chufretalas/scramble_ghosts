@@ -41,27 +41,6 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 		enemyOp.GeoM.Reset()
 	}
 
-	for _, bullet := range g.EHBullets {
-		bulletOp := &ebiten.DrawImageOptions{}
-		bulletOp.GeoM.Translate(bullet.X, bullet.Y)
-		if bullet.Size == 30 {
-			screen.DrawImage(EnemyBullet30Image, bulletOp)
-		} else {
-			screen.DrawImage(EnemyBullet50Image, bulletOp)
-		}
-	}
-
-	// Drawing arcshot
-	arcshotOP := &ebiten.DrawImageOptions{}
-	arcshotOP.GeoM.Translate(g.Arcshot.X, g.Arcshot.Y+100)
-	switch g.Arcshot.State {
-	case "idle":
-		screen.DrawImage(ArcshotSheet.SubImage(image.Rect(0, 0, 150, 200)).(*ebiten.Image), arcshotOP)
-	case "firing":
-		screen.DrawImage(ArcshotSheet.SubImage(image.Rect(150, 0, 300, 200)).(*ebiten.Image), arcshotOP)
-	}
-	// End Arcshot
-
 	// Death Walls warnings
 	if g.ShowDWWL {
 		screen.DrawImage(DWWLImage, nil)
@@ -72,6 +51,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 		DWWROp.GeoM.Translate(1200, 0)
 		screen.DrawImage(DWWRImage, DWWROp)
 	}
+	// End Death Walls warnings
 
 	// Death Walls ☠️
 	if g.DWL.Active {
@@ -85,6 +65,30 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 		dwrOp.GeoM.Translate(g.DWR.X, 0)
 		screen.DrawImage(g.DWR.Image, dwrOp)
 	}
+	// End Death Walls
+
+	// Drawing arcshot
+	arcshotOP := &ebiten.DrawImageOptions{}
+	arcshotOP.GeoM.Translate(g.Arcshot.X, g.Arcshot.Y+100)
+	switch g.Arcshot.State {
+	case "idle":
+		screen.DrawImage(ArcshotSheet.SubImage(image.Rect(0, 0, 150, 200)).(*ebiten.Image), arcshotOP)
+	case "firing":
+		screen.DrawImage(ArcshotSheet.SubImage(image.Rect(150, 0, 300, 200)).(*ebiten.Image), arcshotOP)
+	}
+	// End Arcshot
+
+	// Enemy Homming bullets
+	for _, bullet := range g.EHBullets {
+		bulletOp := &ebiten.DrawImageOptions{}
+		bulletOp.GeoM.Translate(bullet.X, bullet.Y)
+		if bullet.Size == 30 {
+			screen.DrawImage(EnemyBullet30Image, bulletOp)
+		} else {
+			screen.DrawImage(EnemyBullet50Image, bulletOp)
+		}
+	}
+	// End Enemy Homming bullets
 
 	// Score 🏆
 	text.Draw(screen, fmt.Sprintf("Score: %v", g.Score), MyEpicGamerFont, 15, 40, color.White)
