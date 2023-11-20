@@ -11,6 +11,7 @@ type PBullet struct {
 	X, Y  float64 // current position
 	Rad   float64 // launch angle of the bullet in Radians
 	Speed float64 // module of the movement vector
+	Alive bool    // checks if the bullet should be removed
 }
 
 func (b *PBullet) Move() {
@@ -24,7 +25,8 @@ type EHommingBullet struct {
 	X, Y     float64 // current position
 	Vel      utils.Vec
 	Strength float64
-	Size     int // 30 or 50
+	Size     float64 // 30 or 50
+	Alive    bool    // checks if the bullet should be removed
 }
 
 // Aways pass the player's CENTER!

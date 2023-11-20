@@ -3,7 +3,6 @@ package main
 func (g *Game) ResetGame() {
 	g.TimerSystem.Clear()
 	CanShoot = true
-	bulletsToRemove = make([]int, 0)
 	g.PBullets = make([]*PBullet, 0)
 	g.EHBullets = make([]*EHommingBullet, 0)
 	g.Enemies = make([]*Enemy, 0)

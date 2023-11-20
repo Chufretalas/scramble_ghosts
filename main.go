@@ -30,7 +30,6 @@ const (
 )
 
 var (
-	bulletsToRemove     []int
 	ShotDelay           time.Duration
 	CanShoot            bool
 	MyEpicGamerFont     font.Face
@@ -163,7 +162,6 @@ func main() {
 	}
 	ShotDelay = time.Millisecond * 200
 	CanShoot = true
-	bulletsToRemove = make([]int, 0)
 	ebiten.SetFullscreen(true)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("Scramble Ghosts 👻")

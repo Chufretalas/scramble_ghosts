@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"slices"
 	"time"
 
 	"github.com/Chufretalas/scramble_ghosts/utils"
@@ -24,7 +25,7 @@ func (g *Game) GameModeUpdate() int {
 			origin := utils.Vec{X: g.Arcshot.X + 50, Y: g.Arcshot.Y + 220}
 			vel := utils.Vec{X: g.Player.X + PlayerBaseSize/2 - origin.X, Y: g.Player.Y + PlayerBaseSize/2 - origin.Y}
 			vel.ToUnit().EscMult(10)
-			g.EHBullets = append(g.EHBullets, &EHommingBullet{X: origin.X, Y: origin.Y, Vel: vel, Strength: 0.5, Size: 50})
+			g.EHBullets = append(g.EHBullets, &EHommingBullet{X: origin.X, Y: origin.Y, Vel: vel, Strength: 0.5, Size: 50, Alive: true})
 			g.Arcshot.State = "firing"
 			g.TimerSystem.After(time.Second, func() { g.Arcshot.State = "idle" })
 		}
@@ -80,7 +81,7 @@ func (g *Game) GameModeUpdate() int {
 		} else {
 			angle = 90
 		}
-		g.PBullets = append(g.PBullets, &PBullet{X: g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2, Y: g.Player.Y, Rad: utils.Deg2Rad(angle), Speed: 6})
+		g.PBullets = append(g.PBullets, &PBullet{X: g.Player.X + PlayerBaseSize/2 - PlayerBulletSize/2, Y: g.Player.Y, Rad: utils.Deg2Rad(angle), Speed: 6, Alive: true})
 		CanShoot = false
 		g.TimerSystem.After(ShotDelay, func() { CanShoot = true })
 	}
@@ -88,14 +89,16 @@ func (g *Game) GameModeUpdate() int {
 	// move bullets
 	for _, bullet := range g.EHBullets {
 		bullet.Move(g.Player.X+PlayerBaseSize/2, g.Player.Y+PlayerBaseSize/2)
-		//TODO: change the bullets to remove to a dead system, similar to the enemies
+		if bullet.Y+bullet.Size < 0 || bullet.Y > SCREENHEIGHT || bullet.X+bullet.Size < 0 || bullet.X > SCREENWIDTH {
+			bullet.Alive = false
+		}
 		//TODO: check for collision with the player
 	}
 
-	for i, bullet := range g.PBullets {
+	for _, bullet := range g.PBullets {
 		bullet.Move()
 		if bullet.Y+26 < 0 || bullet.Y > SCREENHEIGHT || bullet.X+26 < 0 || bullet.X > SCREENWIDTH {
-			bulletsToRemove = append(bulletsToRemove, i)
+			bullet.Alive = false
 		}
 	}
 	// end move bullets
@@ -153,11 +156,15 @@ func (g *Game) GameModeUpdate() int {
 				enemy.Alive = false
 				continue
 			}
-			for bullet_index, bullet := range g.PBullets {
+			for _, bullet := range g.PBullets {
+				if !bullet.Alive {
+					continue
+				}
+
 				if utils.IsColliding(bullet.X, bullet.Y, PlayerBulletSize, PlayerBulletSize, enemy.X, enemy.Y, enemy.Width, enemy.Height) {
 					// enemy.hit = true
 					enemy.Alive = false
-					bulletsToRemove = append(bulletsToRemove, bullet_index)
+					bullet.Alive = false
 					g.Score += enemy.Score
 					break
 				}
@@ -175,26 +182,18 @@ func (g *Game) GameModeUpdate() int {
 	}
 
 	// Remove enemies
-	new_enemies := make([]*Enemy, 0, len(g.Enemies))
-	for _, enemy := range g.Enemies {
-		if enemy.Alive {
-			new_enemies = append(new_enemies, enemy)
-		}
-	}
-	g.Enemies = new_enemies
+	g.Enemies = slices.DeleteFunc(g.Enemies, func(e *Enemy) bool {
+		return !e.Alive
+	})
 
 	// Remove bullets
-	// TODO: maybe use the same strategy to remove the bullets as is used for the enemies
-	if len(bulletsToRemove) != 0 {
-		bulletsToRemove = utils.RemoveDups(bulletsToRemove)
-		newBullets := make([]*PBullet, 0, len(g.PBullets)-len(bulletsToRemove))
-		for i, bullet := range g.PBullets {
-			if !utils.InSlice(bulletsToRemove, i) {
-				newBullets = append(newBullets, bullet)
-			}
-		}
-		g.PBullets = newBullets
-		bulletsToRemove = make([]int, 0)
-	}
+	g.PBullets = slices.DeleteFunc(g.PBullets, func(b *PBullet) bool {
+		return !b.Alive
+	})
+
+	g.EHBullets = slices.DeleteFunc(g.EHBullets, func(b *EHommingBullet) bool {
+		return !b.Alive
+	})
+
 	return 0
 }
