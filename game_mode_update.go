@@ -66,10 +66,9 @@ func (g *Game) GameModeUpdate() int {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		showDebug = !showDebug
-		NewRandomEnemy(10)
 	}
 
-	g.Player.Move(9, 0.8)
+	g.Player.Move(10, 0.8)
 
 	// fire bullets
 	if CanShoot && !InvincibleMode {
@@ -92,7 +91,13 @@ func (g *Game) GameModeUpdate() int {
 		if bullet.Y+bullet.Size < 0 || bullet.Y > SCREENHEIGHT || bullet.X+bullet.Size < 0 || bullet.X > SCREENWIDTH {
 			bullet.Alive = false
 		}
-		//TODO: check for collision with the player
+		if utils.IsColliding(bullet.X, bullet.Y, bullet.Size, bullet.Size, g.Player.X+6, g.Player.Y+6, PlayerBaseSize-12, PlayerBaseSize-12) {
+			bullet.Alive = false
+			if !InvincibleMode {
+				g.Die()
+				return 0
+			}
+		}
 	}
 
 	for _, bullet := range g.PBullets {
