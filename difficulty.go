@@ -17,8 +17,8 @@ type Difficulty struct {
 	DWSpawnChance   int32 // the higher the number, the rarer the spawn
 	DWSpeedMult     float64
 	ShouldIncrease  bool
-	ArcshotDelay    time.Duration // how long between spawns //TODO: increase this
-	ArcshotShots    int           //how many times arcshot shoots in one pass through the screen //TODO: increase this, maybe
+	ArcshotDelay    time.Duration // how long between spawns
+	ArcshotShots    int           //how many times arcshot can shoot in one pass through the screen
 }
 
 func (d *Difficulty) Reset() {
@@ -58,6 +58,14 @@ func (d *Difficulty) Increase() {
 
 	if d.EnemySpawnDelay > time.Millisecond*60 {
 		d.EnemySpawnDelay -= time.Duration(float32(d.EnemySpawnDelay) * 0.05)
+	}
+
+	if d.Level%8 == 0 && d.ArcshotDelay > time.Second*5 {
+		d.ArcshotDelay -= time.Millisecond * 250
+	}
+
+	if d.Level%10 == 0 && d.ArcshotShots < 6 {
+		d.ArcshotShots += 1
 	}
 }
 

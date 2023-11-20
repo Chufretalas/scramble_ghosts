@@ -18,7 +18,7 @@ func (g *Game) GameModeUpdate() int {
 	//arcshot stuff
 	if g.Arcshot.Active {
 		g.Arcshot.Move()
-		if g.Arcshot.ShotsFired < float64(g.Diff.ArcshotShots) && rand.Int31n(200) == 10 {
+		if g.Arcshot.ShotsFired < float64(g.Diff.ArcshotShots) && rand.Int31n(180) == 10 {
 			g.Arcshot.ShotsFired++
 
 			// X: Archsot.X + Arcshot.Width/2 - bullet.Size = Archsot.X + 75 - 50
