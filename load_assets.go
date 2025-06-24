@@ -3,8 +3,9 @@ package main
 import (
 	"image"
 	_ "image/png"
+	"io"
+	"io/fs"
 	"log"
-	"os"
 
 	u "github.com/Chufretalas/scramble_ghosts/utils"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,8 +14,8 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
-func LoadIcon() {
-	iconFile, err := os.Open("./assets/icon.png")
+func loadIcon(assetsFS fs.FS) {
+	iconFile, err := assetsFS.Open("icon.png")
 	if err != nil {
 		return
 	}
@@ -29,12 +30,20 @@ func LoadIcon() {
 	ebiten.SetWindowIcon([]image.Image{icon})
 }
 
-func LoadFont() {
-	f, err := os.ReadFile("./assets/PressStart2P-Regular.ttf")
+func loadFont(assetsFS fs.FS) {
+
+	f, err := assetsFS.Open("PressStart2P-Regular.ttf")
+	if err != nil {
+		log.Fatal(err)
+		defer f.Close()
+	}
+
+	contents, err := io.ReadAll(f)
 	if err != nil {
 		log.Fatal(err)
 	}
-	tt, err := opentype.Parse(f)
+
+	tt, err := opentype.Parse(contents)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,143 +57,116 @@ func LoadFont() {
 	}
 }
 
-func LoadImages() {
+func loadImages(assetsFS fs.FS) {
 
 	var imageError error
 
-	TitleImage, _, imageError = ebitenutil.NewImageFromFile("./assets/title_screen_4k_16-9.png")
+	TitleImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "title_screen_4k_16-9.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Title image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	GameoverImage, _, imageError = ebitenutil.NewImageFromFile("./assets/gamover_screen_1080p.png")
+	GameoverImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "gamover_screen_1080p.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Gameover image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	GameoverImageHS, _, imageError = ebitenutil.NewImageFromFile("./assets/gamover_screen_hs.png")
+	GameoverImageHS, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "gamover_screen_hs.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Highscore Gameover image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	PlayerBulletImage, _, imageError = ebitenutil.NewImageFromFile("./assets/player_bullet.png")
+	PlayerBulletImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "player_bullet.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Player bullet image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	EnemyBullet30Image, _, imageError = ebitenutil.NewImageFromFile("./assets/enemy_bullet_30.png")
+	EnemyBullet30Image, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "enemy_bullet_30.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Enemy bullet 30 image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	EnemyBullet50Image, _, imageError = ebitenutil.NewImageFromFile("./assets/enemy_bullet_50.png")
+	EnemyBullet50Image, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "enemy_bullet_50.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Enemy bullet 50 image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	PlayerSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/player_spritesheet.png")
+	PlayerSheet, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "player_spritesheet.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Player sprite sheet did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	LinearImage, _, imageError = ebitenutil.NewImageFromFile("./assets/linear_50x50.png")
+	LinearImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "linear_50x50.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("Linear enemy sprite image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	CurveLSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/curve_spritesheet_l.png")
+	CurveLSheet, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "curve_spritesheet_l.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("CurveL enemy spritesheet image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	CurveRSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/curve_spritesheet_r.png")
+	CurveRSheet, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "curve_spritesheet_r.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("CurveR enemy spritesheet image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	DWLImage, _, imageError = ebitenutil.NewImageFromFile("./assets/deathwall_l.png")
+	DWLImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "deathwall_l.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("DWL sprite image did not load " + imageError.Error())
 	}
 
-	imageError = nil
-
-	DWRImage, _, imageError = ebitenutil.NewImageFromFile("./assets/deathwall_r.png")
+	DWRImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "deathwall_r.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("DWR sprite image did not load: " + imageError.Error())
 	}
 
-	imageError = nil
-
-	DWWLImage, _, imageError = ebitenutil.NewImageFromFile("./assets/dw_warning_l.png")
+	DWWLImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "dw_warning_l.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("DWWL sprite image did not load: " + imageError.Error())
 	}
 
-	imageError = nil
-
-	DWWRImage, _, imageError = ebitenutil.NewImageFromFile("./assets/dw_warning_r.png")
+	DWWRImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "dw_warning_r.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("DWWR sprite image did not load: " + imageError.Error())
 	}
 
-	imageError = nil
-
-	LDButtonImage, _, imageError = ebitenutil.NewImageFromFile("./assets/ldbutton.png")
+	LDButtonImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "ldbutton.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("ldbutton image image did not load: " + imageError.Error())
 	}
 
-	imageError = nil
-
-	LDButtonActiveImage, _, imageError = ebitenutil.NewImageFromFile("./assets/ldbutton_active.png")
+	LDButtonActiveImage, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "ldbutton_active.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("ldbutton image image did not load: " + imageError.Error())
 	}
 
-	imageError = nil
-
-	ArcshotSheet, _, imageError = ebitenutil.NewImageFromFile("./assets/arcshot_v2_sheet.png")
+	ArcshotSheet, _, imageError = ebitenutil.NewImageFromFileSystem(assetsFS, "arcshot_v2_sheet.png")
 
 	if imageError != nil {
 		u.ErrorAndDie("arcshot image image did not load: " + imageError.Error())
 	}
 
-	imageError = nil
+}
+
+func LoadAssets(assetsFS fs.FS) {
+	loadFont(assetsFS)
+	loadImages(assetsFS)
+	loadIcon(assetsFS)
 }

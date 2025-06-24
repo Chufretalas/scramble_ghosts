@@ -1,9 +1,13 @@
 package main
 
 import (
+	"embed"
 	"errors"
+	"io/fs"
 	"log"
 	"time"
+
+	u "github.com/Chufretalas/scramble_ghosts/utils"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -13,6 +17,9 @@ import (
 
 	_ "github.com/silbinarywolf/preferdiscretegpu"
 )
+
+//go:embed all:assets
+var assetsFS embed.FS
 
 const (
 	SCREENWIDTH         = 1920
@@ -137,11 +144,13 @@ func main() {
 	LDConnection = "waiting..."
 	go CheckLDConnection()
 
-	LoadFont()
+	assetsFS, err := fs.Sub(assetsFS, "assets")
 
-	LoadImages()
+	if err != nil {
+		u.ErrorAndDie("Could not load assets: " + err.Error())
+	}
 
-	LoadIcon()
+	LoadAssets(assetsFS)
 
 	game := &Game{
 		Enemies:          make([]*Enemy, 0),

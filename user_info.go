@@ -30,6 +30,7 @@ func checkForUIFile() {
 	}
 }
 
+// TODO: put user info in the app data directory
 func LoadUserInfo() {
 
 	checkForUIFile()
