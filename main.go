@@ -37,33 +37,17 @@ const (
 )
 
 var (
-	ShotDelay           time.Duration
-	CanShoot            bool
-	MyEpicGamerFont     font.Face
-	showDebug           bool
-	TitleImage          *ebiten.Image
-	LDButtonImage       *ebiten.Image
-	LDButtonActiveImage *ebiten.Image
-	GameoverImage       *ebiten.Image
-	GameoverImageHS     *ebiten.Image
-	PlayerBulletImage   *ebiten.Image
-	EnemyBullet30Image  *ebiten.Image
-	EnemyBullet50Image  *ebiten.Image
-	PlayerSheet         *ebiten.Image
-	CurveLSheet         *ebiten.Image
-	CurveRSheet         *ebiten.Image
-	LinearImage         *ebiten.Image
-	DWLImage            *ebiten.Image
-	DWRImage            *ebiten.Image
-	DWWLImage           *ebiten.Image // death wall warning
-	DWWRImage           *ebiten.Image // death wall warning
-	ArcshotSheet        *ebiten.Image
-	InvincibleMode      bool
-	UInfo               UserInfo
-	LDConnection        string // anything that is not "ok" should not be trusted
-	GotHighscore        bool
-	editSelected        string
-	canUseClipboard     bool
+	ShotDelay       time.Duration
+	CanShoot        bool
+	MyEpicGamerFont font.Face
+	showDebug       bool
+	InvincibleMode  bool
+	UInfo           UserInfo
+	LDConnection    string // anything that is not "ok" should not be trusted
+	GotHighscore    bool
+	editSelected    string
+	canUseClipboard bool
+	Sprites         GameSprites
 )
 
 type Game struct {
@@ -161,8 +145,8 @@ func main() {
 		TimerSystem:      ebitick.NewTimerSystem(),
 		Score:            0,
 		Mode:             "title",
-		DWL:              DW{Image: DWLImage, Active: false, IsSpawning: false, Rad: 0, X: -DWWidth, Side: "left"},
-		DWR:              DW{Image: DWRImage, Active: false, IsSpawning: false, Rad: 0, X: SCREENWIDTH, Side: "right"},
+		DWL:              DW{Image: Sprites.DWL.Img, Active: false, IsSpawning: false, Rad: 0, X: -DWWidth, Side: "left"},
+		DWR:              DW{Image: Sprites.DWR.Img, Active: false, IsSpawning: false, Rad: 0, X: SCREENWIDTH, Side: "right"},
 		ShowDWWL:         false,
 		ShowDWWR:         false,
 		EditText:         "",

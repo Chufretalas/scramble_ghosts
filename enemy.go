@@ -88,23 +88,26 @@ func (e *Enemy) Move(speedMult float64) {
 
 func (e *Enemy) GetSprite() *ebiten.Image {
 	maxVX := e.VY * 1.2
+
 	switch e.Type {
 	case CurveL:
 		if e.VX < maxVX*0.3 {
-			return CurveLSheet.SubImage(image.Rect(0, 0, 50, 50)).(*ebiten.Image)
+			return Sprites.CurveL.Img.SubImage(image.Rect(0, 0, 50, 50)).(*ebiten.Image)
 		} else if e.VX < maxVX*0.6 {
-			return CurveLSheet.SubImage(image.Rect(50, 0, 100, 50)).(*ebiten.Image)
+			return Sprites.CurveL.Img.SubImage(image.Rect(50, 0, 100, 50)).(*ebiten.Image)
 		} else {
-			return CurveLSheet.SubImage(image.Rect(100, 0, 150, 50)).(*ebiten.Image)
+			return Sprites.CurveL.Img.SubImage(image.Rect(100, 0, 150, 50)).(*ebiten.Image)
 		}
+
 	case CurveR:
 		if e.VX > -maxVX*0.3 {
-			return CurveRSheet.SubImage(image.Rect(0, 0, 50, 50)).(*ebiten.Image)
+			return Sprites.CurveR.Img.SubImage(image.Rect(0, 0, 50, 50)).(*ebiten.Image)
 		} else if e.VX > -maxVX*0.6 {
-			return CurveRSheet.SubImage(image.Rect(50, 0, 100, 50)).(*ebiten.Image)
+			return Sprites.CurveR.Img.SubImage(image.Rect(50, 0, 100, 50)).(*ebiten.Image)
 		} else {
-			return CurveRSheet.SubImage(image.Rect(100, 0, 150, 50)).(*ebiten.Image)
+			return Sprites.CurveR.Img.SubImage(image.Rect(100, 0, 150, 50)).(*ebiten.Image)
 		}
 	}
-	return LinearImage
+
+	return Sprites.Linear.Img
 }

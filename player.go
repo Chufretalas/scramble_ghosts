@@ -18,14 +18,14 @@ type Player struct {
 
 func (p *Player) GetSprite() *ebiten.Image {
 	if ebiten.IsKeyPressed(ebiten.KeyA) {
-		return PlayerSheet.SubImage(image.Rect(40, 0, 80, 40)).(*ebiten.Image)
+		return Sprites.Player.Img.SubImage(image.Rect(40, 0, 80, 40)).(*ebiten.Image)
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyD) {
-		return PlayerSheet.SubImage(image.Rect(80, 0, 120, 40)).(*ebiten.Image)
+		return Sprites.Player.Img.SubImage(image.Rect(80, 0, 120, 40)).(*ebiten.Image)
 	}
 
-	return PlayerSheet.SubImage(image.Rect(0, 0, 40, 40)).(*ebiten.Image)
+	return Sprites.Player.Img.SubImage(image.Rect(0, 0, 40, 40)).(*ebiten.Image)
 }
 
 func (p *Player) Move(maxV, acc float64) {

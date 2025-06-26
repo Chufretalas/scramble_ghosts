@@ -7,17 +7,19 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
+//TODO: more deprecated things here
+
 func (g *Game) TitleDraw(screen *ebiten.Image) {
 	titleOp := &ebiten.DrawImageOptions{}
 	titleOp.GeoM.Scale(0.5, 0.5)
-	screen.DrawImage(TitleImage, titleOp)
+	screen.DrawImage(Sprites.Title.Img, titleOp)
 
 	if LDConnection == "ok" {
 		ldButtonOP := &ebiten.DrawImageOptions{}
 		if x, y := ebiten.CursorPosition(); x <= 350 && y <= 200 {
-			screen.DrawImage(LDButtonActiveImage, ldButtonOP)
+			screen.DrawImage(Sprites.LDButtonActive.Img, ldButtonOP)
 		} else {
-			screen.DrawImage(LDButtonImage, ldButtonOP)
+			screen.DrawImage(Sprites.LDButton.Img, ldButtonOP)
 		}
 	}
 

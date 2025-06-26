@@ -19,7 +19,7 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	for _, bullet := range g.PBullets {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(bullet.X, bullet.Y)
-		screen.DrawImage(PlayerBulletImage, op)
+		screen.DrawImage(Sprites.PlayerBullet.Img, op)
 	}
 
 	// draw player
@@ -43,13 +43,13 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 
 	// Death Walls warnings
 	if g.ShowDWWL {
-		screen.DrawImage(DWWLImage, nil)
+		screen.DrawImage(Sprites.DWWL.Img, nil)
 	}
 
 	if g.ShowDWWR {
 		DWWROp := &ebiten.DrawImageOptions{}
 		DWWROp.GeoM.Translate(1200, 0)
-		screen.DrawImage(DWWRImage, DWWROp)
+		screen.DrawImage(Sprites.DWWR.Img, DWWROp)
 	}
 	// End Death Walls warnings
 
@@ -72,9 +72,9 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 	arcshotOP.GeoM.Translate(g.Arcshot.X, g.Arcshot.Y+100)
 	switch g.Arcshot.State {
 	case "idle":
-		screen.DrawImage(ArcshotSheet.SubImage(image.Rect(0, 0, 150, 200)).(*ebiten.Image), arcshotOP)
+		screen.DrawImage(Sprites.Arcshot.Img.SubImage(image.Rect(0, 0, 150, 200)).(*ebiten.Image), arcshotOP)
 	case "firing":
-		screen.DrawImage(ArcshotSheet.SubImage(image.Rect(150, 0, 300, 200)).(*ebiten.Image), arcshotOP)
+		screen.DrawImage(Sprites.Arcshot.Img.SubImage(image.Rect(150, 0, 300, 200)).(*ebiten.Image), arcshotOP)
 	}
 	// End Arcshot
 
@@ -83,9 +83,9 @@ func (g *Game) GameModeDraw(screen *ebiten.Image) {
 		bulletOp := &ebiten.DrawImageOptions{}
 		bulletOp.GeoM.Translate(bullet.X, bullet.Y)
 		if bullet.Size == 30 {
-			screen.DrawImage(EnemyBullet30Image, bulletOp)
+			screen.DrawImage(Sprites.EnemyBullet30.Img, bulletOp)
 		} else {
-			screen.DrawImage(EnemyBullet50Image, bulletOp)
+			screen.DrawImage(Sprites.EnemyBullet50.Img, bulletOp)
 		}
 	}
 	// End Enemy Homming bullets
