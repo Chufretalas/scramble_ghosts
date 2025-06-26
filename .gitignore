@@ -1,4 +1,5 @@
 *.exe
+*.wasm
 user_info.txt
 user_info.json
 *.env

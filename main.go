@@ -123,10 +123,11 @@ func main() {
 	InvincibleMode = false
 	GotHighscore = false
 
-	LoadUserInfo()
-
-	LDConnection = "waiting..."
-	go CheckLDConnection()
+	if !u.IsWASM() {
+		LoadUserInfo()
+		LDConnection = "waiting..."
+		go CheckLDConnection()
+	}
 
 	assetsFS, err := fs.Sub(assetsFS, "assets")
 

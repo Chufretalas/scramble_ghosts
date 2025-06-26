@@ -4,6 +4,8 @@ import (
 	"os/exec"
 	"runtime"
 
+	u "github.com/Chufretalas/scramble_ghosts/utils"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -13,11 +15,12 @@ func (g *Game) TitleUpdate() {
 		g.Mode = "game"
 		return
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyI) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyI) && !u.IsWASM() {
 		g.Mode = "edit"
 		return
 	}
-	if x, y := ebiten.CursorPosition(); x <= 350 && y <= 200 && inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) { // thanks to: https://gist.github.com/sevkin/9798d67b2cb9d07cb05f89f14ba682f8
+	if x, y := ebiten.CursorPosition(); x <= 350 && y <= 200 && inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) && !u.IsWASM() {
+		// thanks to: https://gist.github.com/sevkin/9798d67b2cb9d07cb05f89f14ba682f8
 		var cmd string
 		var args []string
 
