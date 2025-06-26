@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	u "github.com/Chufretalas/scramble_ghosts/utils"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
@@ -28,8 +30,8 @@ func (g *Game) EditModeDraw(screen *ebiten.Image) {
 	if editSelected == "" {
 		instructionsOp := &ebiten.DrawImageOptions{}
 		instructionsText := "press 'N', 'U', 'P' to edit or 'ESC' to save and exit"
-		instructionsTextSize := text.BoundString(MyEpicGamerFont, instructionsText)
-		instructionsOp.GeoM.Translate(float64(SCREENWIDTH/2-instructionsTextSize.Dx()/2), SCREENHEIGHT-200)
+		instructionsTextWidth := u.GetTextWidth(MyEpicGamerFont, instructionsText)
+		instructionsOp.GeoM.Translate(float64(SCREENWIDTH/2-instructionsTextWidth/2), SCREENHEIGHT-200)
 		text.DrawWithOptions(screen, instructionsText, MyEpicGamerFont, instructionsOp)
 	} else {
 		t := g.EditText
@@ -37,15 +39,15 @@ func (g *Game) EditModeDraw(screen *ebiten.Image) {
 			t += "_"
 		}
 		editTextOp := &ebiten.DrawImageOptions{}
-		editTextSize := text.BoundString(MyEpicGamerFont, g.EditText)
-		editTextOp.GeoM.Translate(float64(SCREENWIDTH/2-editTextSize.Dx()/2), SCREENHEIGHT-200)
+		editTextWidth := u.GetTextWidth(MyEpicGamerFont, g.EditText)
+		editTextOp.GeoM.Translate(float64(SCREENWIDTH/2-editTextWidth/2), SCREENHEIGHT-200)
 		editTextOp.GeoM.Scale(0.8, 0.8)
 		text.DrawWithOptions(screen, t, MyEpicGamerFont, editTextOp)
 
 		instructionsOp := &ebiten.DrawImageOptions{}
 		instructionsText := "press 'ESC' to cancel or 'ENTER' to confirm the changes"
-		instructionsTextSize := text.BoundString(MyEpicGamerFont, instructionsText)
-		instructionsOp.GeoM.Translate(float64(SCREENWIDTH/2-instructionsTextSize.Dx()/2), SCREENHEIGHT-20)
+		instructionsTextWidth := u.GetTextWidth(MyEpicGamerFont, instructionsText)
+		instructionsOp.GeoM.Translate(float64(SCREENWIDTH/2-instructionsTextWidth/2), SCREENHEIGHT-20)
 		text.DrawWithOptions(screen, instructionsText, MyEpicGamerFont, instructionsOp)
 	}
 }

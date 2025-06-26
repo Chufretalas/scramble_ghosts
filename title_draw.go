@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 
+	u "github.com/Chufretalas/scramble_ghosts/utils"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
-
-//TODO: more deprecated things here
 
 func (g *Game) TitleDraw(screen *ebiten.Image) {
 	titleOp := &ebiten.DrawImageOptions{}
@@ -42,8 +42,8 @@ func (g *Game) TitleDraw(screen *ebiten.Image) {
 	editInfoMsgOp := &ebiten.DrawImageOptions{}
 	editInfoMsgOp.GeoM.Scale(0.5, 0.5)
 	editInfoMsgOp.GeoM.Translate(
-		float64((SCREENWIDTH - text.BoundString(MyEpicGamerFont, editInfoMsg).Dx()/2 - 15)),
-		float64(SCREENHEIGHT-text.BoundString(MyEpicGamerFont, editInfoMsg).Dy()/2+10))
+		float64((SCREENWIDTH - u.GetTextWidth(MyEpicGamerFont, editInfoMsg)/2 - 15)),
+		float64(SCREENHEIGHT-u.GetTextHeight(MyEpicGamerFont, editInfoMsg)/2+10))
 	text.DrawWithOptions(screen, editInfoMsg, MyEpicGamerFont, editInfoMsgOp)
 
 }
